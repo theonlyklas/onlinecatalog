@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+    <link rel="stylesheet" href="css/style.css">
+
+    <script>
+        function initGL(canvas) {
+            try {
+                gl = canvas.getContext("experimental-webgl");
+                gl.viewportWidth = canvas.width;
+                gl.viewportHeight = canvas.height;
+            } catch (e) {}
+            if (!gl) {
+                alert("Could not initialise WebGL, sorry :-(");
+            }
+        }
+
+        window.onload = function() {
+          var canvas = document.getElementById("myCanvas");
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+
+          initGL(canvas);
+
+          /* Experiments */
+
+          // Change color of canvas to smoker yellow
+          gl.clearColor(0.9,0.9,0.8,1);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+        }
+
+        function resize() {
+
+        }
+    </script>
+</head>
+
+<body onresize="">
+    <canvas id="myCanvas"></canvas>
+</body>
+
+</html>
