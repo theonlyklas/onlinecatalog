@@ -42,3 +42,12 @@ table {
     border-collapse: collapse;
     border-spacing: 0;
 }
+
+/*  Jason's Customizationx */
+
+/* make body fullscreen */
+
+html, body {
+  height: 100%;
+  min-height: 100%;
+}
