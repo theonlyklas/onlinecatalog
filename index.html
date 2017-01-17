@@ -5,6 +5,7 @@
 <head>
     <link rel="stylesheet" href="css/style.css">
 
+    <!-- webGL stuff ...
     <script>
         function initGL(canvas) {
             try {
@@ -35,10 +36,28 @@
 
         }
     </script>
+    -->
+
+    <script>
+      function removeAds() {
+        var bookReaderIFrame = document.getElementById("ifr");
+        var bookReaderInnerDoc = bookReaderIFrame.contentDocument;
+        document.innerHTML = bookReaderInnerDoc.innerHTML;
+
+        // var iFrames = bookReaderInnerDoc.querySelectorAll("iframe");
+
+        console.log(iFrames);
+      }
+
+      window.onload = function() {
+        removeAds();
+      }
+    </script>
 </head>
 
-<body onresize="">
-    <canvas id="myCanvas"></canvas>
+<body>
+    <!-- <canvas id="myCanvas"></canvas> -->
+    <iframe id="ifr" frameborder='0' height='100%' width='100%' title='Campus Book Store Test' src='https://files.ramcomputers.uri.edu/bookstore/catalog/php/index.php' type='text/html' allowfullscreen='true' scrolling='no' marginwidth='0' marginheight='0'></iframe>
 </body>
 
 </html>
