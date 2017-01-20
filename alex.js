@@ -43,13 +43,15 @@ function loadPage(num) {
     }
     img.src = `pdf\\book-` + num + `.png`;
     setTimeout(function() {
-            if (imgReady) {
-                book.innerHTML += `<img class="page" src="pdf\\book-` + num + `.png"/>`;
-            } else {
-                if (odd) {
+        if (imgReady) {
+            book.innerHTML += `<img class="page" src="pdf\\book-` + num + `.png"/>`;
+        } else {
+            if (odd) {
                 prevPage();
             } else {
-                book.className += " last";
+                if (!book.className.includes("last")) {
+                    book.className += " last";
+                }
             }
         }
     }, 1000)
@@ -84,6 +86,7 @@ function nextPage() {
 function prevPage() {
   flipRight();
   window.setTimeout(function() {
+
     if (book.className.includes("openBook")) {
         book.innerHTML = "";
         PAGE -= 2;
@@ -92,6 +95,9 @@ function prevPage() {
             loadPage(0);
             book.className = "";
         } else {
+            if (book.className.includes('last')) {
+                book.className = book.className.replace(/last/g, '');
+            }
             loadPage(PAGE - 1);
             loadPage(PAGE);
         }
