@@ -15,34 +15,59 @@ window.onload = function() {
 }
 
 
-
+//////////////////////////////////////////////////////
 //Helper Functions//
 
 //function to render the Iframe
 //with the desired catalog page
 //num is an int
 function loadPage(num) {
+    var odd = false;
     var book = document.getElementById('book');
-    book.innerHTML += `<img class="page" src="pdf\\book-` + num + `.png"/>`;
+    //clear inner html if odd number
+    if (num % 2 != 0) {
+        odd = true;
+    }
+    if (odd) {
+        book.innerHTML = "";
+    }
+    var imgReady = false;
+    var img = new Image();
+    img.onload = function() {
+        imgReady = true;
+    }
+    img.src = `pdf\\book-` + num + `.png`;
+    setTimeout(function() {
+            if (imgReady) {
+                book.innerHTML += `<img class="page" src="pdf\\book-` + num + `.png"/>`;
+            } else {
+                if (odd) {
+                prevPage();
+            } else {
+                book.className += " last";
+            }
+        }
+    }, 100)
 }
 
 function open() {
     var book = document.getElementById('book');
     book.className = "openBook";
-    book.innerHTML = "";
     PAGE = 2;
     loadPage(PAGE - 1);
     loadPage(PAGE);
+    if (book.offsetWidth > window.innerWidth) {
+        book.className += " scale";
+    }
 
 }
 
 //function to get next page
 function nextPage() {
     document.getElementById('book');
-    if (book.className != "openBook") {
+    if (!(book.className.includes("openBook"))) {
         open();
     } else {
-        book.innerHTML = "";
         PAGE += 2;
         loadPage(PAGE - 1);
         loadPage(PAGE);
@@ -51,22 +76,16 @@ function nextPage() {
 
 function prevPage() {
     document.getElementById('book');
-    if (book.className == "openBook") {
+    if (book.className.includes("openBook")) {
         book.innerHTML = "";
         PAGE -= 2;
         if (PAGE <= 0) {
-          PAGE = 0;
-          loadPage(0);
-          book.className = "";
+            PAGE = 0;
+            loadPage(0);
+            book.className = "";
         } else {
             loadPage(PAGE - 1);
             loadPage(PAGE);
         }
     }
-}
-
-//function to release the frame from memory
-//num is an int
-function clearPage(num) {
-
 }
