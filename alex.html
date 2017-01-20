@@ -38,6 +38,41 @@
       width: 100%;
       height: 100%;
     }
+
+    .leftPage {
+      animation-name: flipRight;
+      animation-duration: 1s;
+      z-index: 10;
+    }
+
+    .rightPage {
+      animation-name: flipLeft;
+      animation-duration: 1s;
+    }
+
+    .leftFinal {
+      transform: translateX(100%) rotateY(-180deg);
+    }
+
+    .rightFinal {
+      transform: translateX(-100%) rotateY(180deg);
+    }
+
+    @keyframes flipLeft {
+      0% {
+      }
+      100% {
+          transform: translateX(-100%) rotateY(180deg);
+      }
+    }
+
+    @keyframes flipRight {
+      0% {
+      }
+      100% {
+          transform: translateX(100%) rotateY(-180deg);
+      }
+    }
     /*Button Stuff*/
     #left{
       position: absolute;
@@ -53,11 +88,11 @@
 </head>
 
 <body>
-  <button id="left"><</button>
+  <button id="left" onclick="prevPage()"><</button>
   <div id="book">
     <!--filled with js-->
   </div>
-  <button id="right">></button>
+  <button id="right" onclick="nextPage()">></button>
 </body>
 
 </html>

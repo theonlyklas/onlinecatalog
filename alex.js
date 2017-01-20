@@ -4,14 +4,15 @@ window.onload = function() {
     PAGE = 0;
     loadPage(PAGE);
 
+    /*
     var left = document.getElementById('left');
     var right = document.getElementById('right');
     left.onclick = function() {
-        prevPage();
+      prevPage();
     };
     right.onclick = function() {
         nextPage();
-    };
+    }; */
 }
 
 
@@ -30,6 +31,10 @@ function loadPage(num) {
     }
     if (odd) {
         book.innerHTML = "";
+        var pageSide = "leftPage";
+    }
+    else {
+      var pageSide = "rightPage";
     }
     var imgReady = false;
     var img = new Image();
@@ -47,7 +52,7 @@ function loadPage(num) {
                 book.className += " last";
             }
         }
-    }, 100)
+    }, 1000)
 }
 
 function open() {
@@ -64,7 +69,8 @@ function open() {
 
 //function to get next page
 function nextPage() {
-    document.getElementById('book');
+  flipLeft();
+  window.setTimeout(function() {
     if (!(book.className.includes("openBook"))) {
         open();
     } else {
@@ -72,10 +78,12 @@ function nextPage() {
         loadPage(PAGE - 1);
         loadPage(PAGE);
     }
+  }, 1000);
 }
 
 function prevPage() {
-    document.getElementById('book');
+  flipRight();
+  window.setTimeout(function() {
     if (book.className.includes("openBook")) {
         book.innerHTML = "";
         PAGE -= 2;
@@ -88,4 +96,21 @@ function prevPage() {
             loadPage(PAGE);
         }
     }
+  }, 1000);
+}
+
+function flipRight() {
+  document.getElementById('book').childNodes[0].className += " leftPage";
+
+  window.setTimeout(function() {
+    document.getElementById('book').childNodes[0].className += " leftFinal";
+  }, 1000);
+}
+
+function flipLeft() {
+  document.getElementById('book').childNodes[1].className += " rightPage";
+
+  window.setTimeout(function() {
+    document.getElementById('book').childNodes[1].className += " rightFinal";
+  }, 1000);
 }
