@@ -66,7 +66,7 @@ function open() {
 
 //function to get next page
 function nextPage() {
-    document.getElementById('book');
+    var book = document.getElementById('book');
     if (!(book.className.includes("openBook"))) {
         open();
     } else {
@@ -77,7 +77,7 @@ function nextPage() {
 }
 
 function prevPage() {
-    document.getElementById('book');
+    var book = document.getElementById('book');
     if (book.className.includes("openBook")) {
         book.innerHTML = "";
         PAGE -= 2;
