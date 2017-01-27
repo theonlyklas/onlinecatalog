@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="pdf.js"></script>
+
+    <!-- webGL stuff ...
+    <script>
+        function initGL(canvas) {
+            try {
+                gl = canvas.getContext("experimental-webgl");
+                gl.viewportWidth = canvas.width;
+                gl.viewportHeight = canvas.height;
+            } catch (e) {}
+            if (!gl) {
+                alert("Could not initialise WebGL, sorry :-(");
+            }
+        }
+
+        window.onload = function() {
+          var canvas = document.getElementById("myCanvas");
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+
+          initGL(canvas);
+
+          /* Experiments */
+
+          // Change color of canvas to smoker yellow
+          gl.clearColor(0.9,0.9,0.8,1);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+        }
+
+        function resize() {
+
+        }
+    </script>
+    -->
+
+    <!-- ad removal stuff ...
+    <script>
+      function removeAds() {
+        var bookReaderIFrame = document.getElementById("ifr");
+        var bookReaderInnerDoc = bookReaderIFrame.contentDocument;
+        document.innerHTML = bookReaderInnerDoc.innerHTML;
+
+        // var iFrames = bookReaderInnerDoc.querySelectorAll("iframe");
+
+        console.log(iFrames);
+      }
+
+      window.onload = function() {
+        removeAds();
+      }
+    </script>
+  -->
+    <script>
+        var pdf = PDFJS.getDocument('helloworld.pdf');
+
+
+            pdf.getPage(1).then(function(page) {
+                // you can now use *page* here
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <!-- <canvas id="myCanvas"></canvas>
+    <iframe id="ifr" frameborder='0' height='100%' width='100%' title='Campus Book Store Test' src='https://files.ramcomputers.uri.edu/bookstore/catalog/php/index.php' type='text/html' allowfullscreen='true' scrolling='no' marginwidth='0' marginheight='0'></iframe> -->
+    <canvas id="pdfCanvas"></canvas>
+</body>
+
+</html>
