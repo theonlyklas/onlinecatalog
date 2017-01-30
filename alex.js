@@ -8,6 +8,8 @@ window.onload = function() {
         delayedLoad(pdf, PAGE)
     });
 
+    PAGE = 1;
+
     //loadPage(PAGE);
 
     /*
@@ -31,6 +33,9 @@ function delayedLoad(pdf) {
         var scale = 2;
         var viewport = page.getViewport(scale);
         var canvas = document.createElement("canvas");
+        canvas.id = pageID;
+        canvas.className = "rightBehind";
+        canvas.style.zIndex = 0 - PAGE;
         console.log(canvas);
         var context = canvas.getContext('2d');
 
@@ -45,11 +50,12 @@ function delayedLoad(pdf) {
 
         page.render(renderContext);
 
-        document.getElementById("book").appendChild(canvas);
+        document.getElementById("rightBook").appendChild(canvas);
         console.log("page " + PAGE + " rendered");
         console.log(pdf.numPages);
         PAGE++;
-        if (PAGE < 5) {
+
+        if (PAGE < 9) {
           delayedLoad(pdf, PAGE);
         }
     });
@@ -134,12 +140,12 @@ function open() {
     if (book.offsetWidth > window.innerWidth) {
         book.className += " scale";
     }
-
 }
 
 //function to get next page
 function nextPage() {
     flipLeft();
+
     window.setTimeout(function() {
         if (!(book.className.includes("openBook"))) {
             open();
@@ -182,9 +188,11 @@ function flipRight() {
 }
 
 function flipLeft() {
-    document.getElementById('book').childNodes[1].className += " rightPage";
+    document.getElementById('rightBook').childNodes[1].className += " rightPage";
+    document.getElementById('rightBook').childNodes[2].className += " rightPage";
 
     window.setTimeout(function() {
-        document.getElementById('book').childNodes[1].className += " rightFinal";
+        document.getElementById('rightBook').childNodes[1].className += " rightFinal";
+        document.getElementById('rightBook').childNodes[2].className += " rightPage";
     }, 1000);
 }
