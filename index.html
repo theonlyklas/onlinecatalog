@@ -1,63 +1,146 @@
-<!DOCTYPE HTML>
-
 <html>
 
 <head>
-    <link rel="stylesheet" href="css/style.css">
+  <script type="text/javascript" src="js/pdf.js"></script>
+  <script type="text/javascript" src="alex.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .openBook{
+      margin-top: 10vh !important;
+      width: 123.64vh !important;
+    }
 
-    <!-- webGL stuff ...
-    <script>
-        function initGL(canvas) {
-            try {
-                gl = canvas.getContext("experimental-webgl");
-                gl.viewportWidth = canvas.width;
-                gl.viewportHeight = canvas.height;
-            } catch (e) {}
-            if (!gl) {
-                alert("Could not initialise WebGL, sorry :-(");
-            }
-        }
+    .openBook .page{
+      float: left !important;
+      width: 50%!important;
+    }
 
-        window.onload = function() {
-          var canvas = document.getElementById("myCanvas");
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
+    .scale{
+      width: 75vw !important;
+      height: 48.5vw !important;
+    }
 
-          initGL(canvas);
+    .last{
+      width:61.82vh !important;
+      height:80vh !important;
+    }
 
-          /* Experiments */
+    .last .page{
+      width:100% !important;
+    }
 
-          // Change color of canvas to smoker yellow
-          gl.clearColor(0.9,0.9,0.8,1);
-          gl.clear(gl.COLOR_BUFFER_BIT);
-        }
+    .page{
+      position: relative;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+    }
 
-        function resize() {
+    .leftPage {
+      animation-name: flipRight;
+      animation-duration: 1s;
+      z-index: 10;
+    }
 
-        }
-    </script>
-    -->
+    .rightPage {
+      animation-name: flipLeft;
+      animation-duration: 1s;
+    }
 
-    <script>
-      function removeAds() {
-        var bookReaderIFrame = document.getElementById("ifr");
-        var bookReaderInnerDoc = bookReaderIFrame.contentDocument;
-        document.innerHTML = bookReaderInnerDoc.innerHTML;
+    .leftFinal {
+      transform: translateX(100%) rotateY(-180deg);
+    }
 
-        // var iFrames = bookReaderInnerDoc.querySelectorAll("iframe");
+    .rightFinal {
+      transform: translateX(-100%) rotateY(180deg);
+    }
 
-        console.log(iFrames);
+    @keyframes flipLeft {
+      0% {
       }
-
-      window.onload = function() {
-        removeAds();
+      100% {
+          transform: translateX(-100%) rotateY(180deg);
       }
-    </script>
+    }
+
+    @keyframes flipRight {
+      0% {
+      }
+      100% {
+          transform: translateX(100%) rotateY(-180deg);
+      }
+    }
+
+    .leftBehind {
+      position: absolute;
+      right: 50%;
+      width: 50%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .leftFront {
+      position: absolute;
+      right: 50%;
+      width: 50%;
+      height: 100%;
+      z-index: 2;
+    }
+
+    .rightBehind {
+      position: absolute;
+      left: 50%;
+      width: 50%;
+      height: 100%;
+    }
+
+    .rightFront {
+      position: absolute;
+      left: 50%;
+      width: 50%;
+      height: 100%;
+      z-index: 2;
+    }
+
+    #test {
+      left: 50%;
+      width: 5%;
+      height: 10%;
+    }
+
+    /*Button Stuff*/
+    #left{
+      position: absolute;
+      top: 35vh;
+      z-index: 10;
+
+    }
+    #right{
+      position: absolute;
+      top: 35vh;
+      right: 0;
+      z-index: 10;
+    }
+
+    /* stuff */
+    #leftBook {
+      width: 50%;
+    }
+
+    #rightBook {
+      width: 50%;
+    }
+  </style>
 </head>
 
 <body>
-    <!-- <canvas id="myCanvas"></canvas> -->
-    <iframe id="ifr" frameborder='0' height='100%' width='100%' title='Campus Book Store Test' src='https://files.ramcomputers.uri.edu/bookstore/catalog/php/index.php' type='text/html' allowfullscreen='true' scrolling='no' marginwidth='0' marginheight='0'></iframe>
+  <button id="left" onclick="prevPage()"><</button>
+  <div id="leftBook">
+  </div>
+  <div id="rightBook">
+  </div>
+  <button id="right" onclick="nextPage()">></button>
 </body>
 
 </html>
