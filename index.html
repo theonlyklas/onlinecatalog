@@ -30,30 +30,51 @@
     }
 
     .page{
-      position: relative;
+      position: absolute;
       top: 0;
-      right: 0;
-      width: 100%;
+      left: 50%;
+      width: 50%;
       height: 100%;
     }
 
-    .leftPage {
-      animation-name: flipRight;
-      animation-duration: 1s;
-      z-index: 10;
+    .backwardsPage {
+      transform: rotateY(180deg);
     }
 
-    .rightPage {
+    .animatedLeftPage {
+      animation-name: flipRight;
+      animation-duration: 1s;
+    }
+
+    .animatedRightPage {
       animation-name: flipLeft;
       animation-duration: 1s;
     }
 
-    .leftFinal {
+    .animatedBackwardsRightPage {
+      animation-name: backwardsFlipLeft;
+      animation-duration: 1s;
+    }
+
+    .animatedBackwardsLeftPage {
+      animation-name: backwardsFlipRight;
+      animation-duration: 1s;
+    }
+
+    .leftPageFinal {
       transform: translateX(100%) rotateY(-180deg);
     }
 
-    .rightFinal {
+    .rightPageFinal {
       transform: translateX(-100%) rotateY(180deg);
+    }
+
+    .backwardsLeftPageFinal {
+      transform: translate(100%) rotateY(0deg);
+    }
+
+    .backwardsRightPageFinal {
+      transform: translateX(-100%) rotateY(0deg);
     }
 
     @keyframes flipLeft {
@@ -72,35 +93,21 @@
       }
     }
 
-    .leftBehind {
-      position: absolute;
-      right: 50%;
-      width: 50%;
-      height: 100%;
-      z-index: 1;
+    @keyframes backwardsFlipLeft {
+      0% {
+      }
+      100% {
+        transform: translateX(-100%) rotateY(0deg);
+      }
     }
 
-    .leftFront {
-      position: absolute;
-      right: 50%;
-      width: 50%;
-      height: 100%;
-      z-index: 2;
-    }
+    @keyframes backwardsFlipRight {
+      0% {
 
-    .rightBehind {
-      position: absolute;
-      left: 50%;
-      width: 50%;
-      height: 100%;
-    }
-
-    .rightFront {
-      position: absolute;
-      left: 50%;
-      width: 50%;
-      height: 100%;
-      z-index: 2;
+      }
+      100% {
+        transform: translateX(100%) rotateY(0deg);
+      }
     }
 
     #test {
@@ -113,32 +120,24 @@
     #left{
       position: absolute;
       top: 35vh;
-      z-index: 10;
+      z-index: 10000;
 
     }
     #right{
       position: absolute;
       top: 35vh;
       right: 0;
-      z-index: 10;
+      z-index: 10000;
     }
 
     /* stuff */
-    #leftBook {
-      width: 50%;
-    }
 
-    #rightBook {
-      width: 50%;
-    }
   </style>
 </head>
 
 <body>
   <button id="left" onclick="prevPage()"><</button>
-  <div id="leftBook">
-  </div>
-  <div id="rightBook">
+  <div id="book">
   </div>
   <button id="right" onclick="nextPage()">></button>
 </body>
