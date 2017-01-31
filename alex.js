@@ -23,19 +23,23 @@ window.onload = function() {
     }; */
 }
 
-function delayedLoad(pdf) {
+function delayedLoad(pdf, currentPage) {
   setTimeout(function () {
-    var pageID = 'page-' + PAGE;
-    //book.innerHTML += '<div id="test" style="z-index:-' + PAGE + '"><canvas class="rightBehind" id="' + pageID + '"></canvas></div>';
+    var pageID = 'page-' + currentPage;
 
-    pdf.getPage(PAGE).then(function(page) {
+    pdf.getPage(currentPage).then(function(page) {
         // you can now use *page* here
         var scale = 2;
         var viewport = page.getViewport(scale);
         var canvas = document.createElement("canvas");
         canvas.id = pageID;
-        canvas.className = "rightBehind";
-        canvas.style.zIndex = 0 - PAGE;
+        canvas.className = "page";
+        canvas.style.zIndex = 0 - currentPage;
+
+        if (currentPage % 2 == 0) {
+          canvas.className += " backwardsPage";
+        }
+
         console.log(canvas);
         var context = canvas.getContext('2d');
 
@@ -50,16 +54,19 @@ function delayedLoad(pdf) {
 
         page.render(renderContext);
 
-        document.getElementById("rightBook").appendChild(canvas);
-        console.log("page " + PAGE + " rendered");
+        document.getElementById("book").appendChild(canvas);
+        console.log("page " + currentPage + " rendered");
         console.log(pdf.numPages);
-        PAGE++;
+        currentPage++;
 
-        if (PAGE < 9) {
-          delayedLoad(pdf, PAGE);
+        if (currentPage < pdf.numPages) {
+          delayedLoad(pdf, currentPage);
+        }
+        else {
+          PAGE = 1;
         }
     });
-  }, 1000);
+  }, 500);
 }
 
 //////////////////////////////////////////////////////
@@ -145,16 +152,6 @@ function open() {
 //function to get next page
 function nextPage() {
     flipLeft();
-
-    window.setTimeout(function() {
-        if (!(book.className.includes("openBook"))) {
-            open();
-        } else {
-            PAGE += 2;
-            loadPage(PAGE - 1);
-            loadPage(PAGE);
-        }
-    }, 1000);
 }
 
 function prevPage() {
@@ -180,19 +177,33 @@ function prevPage() {
 }
 
 function flipRight() {
-    document.getElementById('book').childNodes[0].className += " leftPage";
+  var pages = document.getElementById('book').childNodes;
+  pages[PAGE - 1].className += " animatedLeftPage";
+  pages[PAGE - 2].className += " animatedBackwardsLeftPage";
 
-    window.setTimeout(function() {
-        document.getElementById('book').childNodes[0].className += " leftFinal";
-    }, 1000);
+  window.setTimeout(function() {
+    pages[PAGE - 1].style.zIndex = PAGE;
+  }, 250);
+
+  window.setTimeout(function() {
+      document.getElementById('book').childNodes[PAGE - 1].className = "page leftPageFinal";
+      document.getElementById('book').childNodes[PAGE - 2].className = "page backwardsLeftPageFinal";
+      PAGE -= 2;
+  }, 1000);
 }
 
 function flipLeft() {
-    document.getElementById('rightBook').childNodes[1].className += " rightPage";
-    document.getElementById('rightBook').childNodes[2].className += " rightPage";
+    var pages = document.getElementById('book').childNodes;
+    pages[PAGE].className += " animatedRightPage";
+    pages[PAGE + 1].className += " animatedBackwardsRightPage";
 
     window.setTimeout(function() {
-        document.getElementById('rightBook').childNodes[1].className += " rightFinal";
-        document.getElementById('rightBook').childNodes[2].className += " rightPage";
+      pages[PAGE + 1].style.zIndex = PAGE;
+    }, 250);
+
+    window.setTimeout(function() {
+        document.getElementById('book').childNodes[PAGE].className = "page rightPageFinal";
+        document.getElementById('book').childNodes[PAGE + 1].className = "page backwardsRightPageFinal";
+        PAGE += 2;
     }, 1000);
 }
