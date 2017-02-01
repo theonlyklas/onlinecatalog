@@ -1,145 +1,147 @@
 <html>
 
 <head>
-  <script type="text/javascript" src="js/pdf.js"></script>
-  <script type="text/javascript" src="alex.js"></script>
-  <link rel="stylesheet" href="css/style.css">
-  <style>
-    .openBook{
-      margin-top: 10vh !important;
-      width: 123.64vh !important;
-    }
+    <script type="text/javascript" src="js/pdf.js"></script>
+    <script type="text/javascript" src="alex.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .openBook {
+            margin-top: 10vh !important;
+            width: 123.64vh !important;
+        }
 
-    .openBook .page{
-      float: left !important;
-      width: 50%!important;
-    }
+        .openBook .page {
+            float: left !important;
+            width: 50%!important;
+        }
 
-    .scale{
-      width: 75vw !important;
-      height: 48.5vw !important;
-    }
+        .scale {
+            width: 75vw !important;
+            height: 48.5vw !important;
+        }
 
-    .last{
-      width:61.82vh !important;
-      height:80vh !important;
-    }
+        .last {
+            width: 61.82vh !important;
+            height: 80vh !important;
+        }
 
-    .last .page{
-      width:100% !important;
-    }
+        .last .page {
+            width: 100% !important;
+        }
 
-    .page{
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 50%;
-      height: 100%;
-    }
+        .page {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+        }
 
-    .backwardsPage {
-      transform: rotateY(180deg);
-    }
+        .animatedLeftPage {
+            animation-name: flipRight;
+            animation-duration: 1s;
+            animation-fill-mode: forwards;
+        }
 
-    .animatedLeftPage {
-      animation-name: flipRight;
-      animation-duration: 1s;
-    }
+        .animatedRightPage {
+            animation-name: flipLeft;
+            animation-duration: 1s;
+            animation-fill-mode: forwards;
+        }
 
-    .animatedRightPage {
-      animation-name: flipLeft;
-      animation-duration: 1s;
-    }
+        .animatedBackwardsLeftPage {
+            animation-name: backwardsFlipRight;
+            animation-duration: 1s;
+            animation-fill-mode: forwards;
+        }
 
-    .animatedBackwardsRightPage {
-      animation-name: backwardsFlipLeft;
-      animation-duration: 1s;
-    }
+        .animatedBackwardsRightPage {
+            animation-name: backwardsFlipLeft;
+            animation-duration: 1s;
+            animation-fill-mode: forwards;
+        }
 
-    .animatedBackwardsLeftPage {
-      animation-name: backwardsFlipRight;
-      animation-duration: 1s;
-    }
+        @keyframes flipLeft {
+            0% {
+              z-index: 7;
+            }
+            50% {
+                z-index: 5;
+            }
+            100% {
+                z-index: 5;
+                transform: translateX(-100%) rotateY(180deg);
+            }
+        }
 
-    .leftPageFinal {
-      transform: translateX(100%) rotateY(-180deg);
-    }
+        @keyframes flipRight {
+            0% {
+              z-index: 7;
+              transform: translateX(-100%);
+            }
+            50% {
+                z-index: 5;
+            }
+            100% {
+                z-index: 5;
+                transform: translateX(0%) rotateY(-180deg);
+            }
+        }
 
-    .rightPageFinal {
-      transform: translateX(-100%) rotateY(180deg);
-    }
+        @keyframes backwardsFlipLeft {
+            0% {
+                transform: rotateY(180deg);
+            }
+            50% {
+                z-index: 6;
+            }
+            100% {
+                z-index: 6;
+                transform: translateX(-100%) rotateY(0deg);
+            }
+        }
 
-    .backwardsLeftPageFinal {
-      transform: translate(100%) rotateY(0deg);
-    }
+        @keyframes backwardsFlipRight {
+            0% {
+              transform: translateX(-100%) rotateY(180deg);
+            }
+            50% {
+                z-index: 6;
+            }
+            100% {
+                z-index: 6;
+                transform: translateX(0%) rotateY(0deg);
+            }
+        }
 
-    .backwardsRightPageFinal {
-      transform: translateX(-100%) rotateY(0deg);
-    }
+        #test {
+            left: 50%;
+            width: 5%;
+            height: 10%;
+        }
+        /*Button Stuff*/
 
-    @keyframes flipLeft {
-      0% {
-      }
-      100% {
-          transform: translateX(-100%) rotateY(180deg);
-      }
-    }
+        #left {
+            position: absolute;
+            top: 35vh;
+            z-index: 10000;
+        }
 
-    @keyframes flipRight {
-      0% {
-      }
-      100% {
-          transform: translateX(100%) rotateY(-180deg);
-      }
-    }
-
-    @keyframes backwardsFlipLeft {
-      0% {
-      }
-      100% {
-        transform: translateX(-100%) rotateY(0deg);
-      }
-    }
-
-    @keyframes backwardsFlipRight {
-      0% {
-
-      }
-      100% {
-        transform: translateX(100%) rotateY(0deg);
-      }
-    }
-
-    #test {
-      left: 50%;
-      width: 5%;
-      height: 10%;
-    }
-
-    /*Button Stuff*/
-    #left{
-      position: absolute;
-      top: 35vh;
-      z-index: 10000;
-
-    }
-    #right{
-      position: absolute;
-      top: 35vh;
-      right: 0;
-      z-index: 10000;
-    }
-
-    /* stuff */
-
-  </style>
+        #right {
+            position: absolute;
+            top: 35vh;
+            right: 0;
+            z-index: 10000;
+        }
+        /* stuff */
+    </style>
 </head>
 
 <body>
-  <button id="left" onclick="prevPage()"><</button>
-  <div id="book">
-  </div>
-  <button id="right" onclick="nextPage()">></button>
+    <button id="left" onclick="prevPage()"><</button>
+    <div id="book">
+    </div>
+    <button id="right" onclick="nextPage()">></button>
 </body>
 
 </html>
