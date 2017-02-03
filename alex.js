@@ -21,9 +21,16 @@ function delayedLoad(pdf, currentPage) {
             var viewport = page.getViewport(scale);
             var canvas = document.createElement("canvas");
             canvas.id = pageID;
-            canvas.className = "page";
 
-            canvas.style.zIndex = 0 - currentPage;
+            if (currentPage == 1) {
+                canvas.className = "page leftBackwardsPageFinal"
+            } else if (currentPage == 2) {
+                canvas.className = "page leftPageFinal"
+            } else {
+                canvas.className = "page";
+            }
+
+
 
             console.log(canvas);
             var context = canvas.getContext('2d');
@@ -68,18 +75,15 @@ function flipRight() {
 
     if (window.PAGE < pages.length) {
         for (var i = 1; i < pages.length; i++) {
-            if (i == window.PAGE - 3) {
+            if (i == window.PAGE + 1 || i == window.PAGE + 2) {
+                pages[i].className = "page";
+            } else if (i == window.PAGE - 3) {
                 pages[i].className = "page rightBackwardsPageFinal";
             } else if (i == window.PAGE - 4) {
                 pages[i].className = "page rightPageFinal";
             } else if (i == window.PAGE) {
                 pages[i].className = "page leftBackwardsPageFinal";
-            } else if (i == window.PAGE + 2) {
-                pages[i].className = "page leftPageFinal";
-            } else {
-                pages[i].className = "page";
             }
-            pages[i].style.zIndex = "";
         }
 
         pages[window.PAGE - 1].className = "page animatedLeftPage";
@@ -94,18 +98,15 @@ function flipLeft() {
 
     if (window.PAGE < pages.length) {
         for (var i = 1; i < pages.length; i++) {
-            if (i == window.PAGE - 1) {
+            if (i == window.PAGE - 3 || i == window.PAGE - 4) {
+                pages[i].className = "page";
+            } else if (i == window.PAGE - 1) {
                 pages[i].className = "page rightBackwardsPageFinal";
             } else if (i == window.PAGE - 2) {
                 pages[i].className = "page rightPageFinal";
             } else if (i == window.PAGE + 2) {
                 pages[i].className = "page leftBackwardsPageFinal";
-            } else if (i == window.PAGE + 3) {
-                pages[i].clasName = "page leftPageFinal";
-            } else {
-                pages[i].className = "page";
             }
-            pages[i].style.zIndex = "";
         }
 
         pages[window.PAGE].className = "page animatedRightPage";
