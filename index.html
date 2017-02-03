@@ -61,6 +61,26 @@
             animation-fill-mode: forwards;
         }
 
+        .rightPageFinal {
+          z-index: 1;
+          transform: translateX(-100%) rotateY(180deg);
+        }
+
+        .rightBackwardsPageFinal {
+          z-index: 2;
+          transform: translateX(-100%) rotateY(0deg);
+        }
+
+        .leftPageFinal {
+          z-index: 1;
+          transform: translateX(0%) rotateY(180deg);
+        }
+
+        .leftBackwardsPageFinal {
+          z-index: 2;
+          transform: translateX(0%) rotateY(0deg);
+        }
+
         @keyframes flipLeft {
             0% {
               z-index: 5;

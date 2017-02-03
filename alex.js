@@ -66,18 +66,27 @@ function prevPage() {
 function flipRight() {
     var pages = document.getElementById('book').childNodes;
 
-    for (var i = 1; i < pages.length; i++) {
-        pages[i].style.zIndex = 0 - i;
+    if (window.PAGE < pages.length) {
+        for (var i = 1; i < pages.length; i++) {
+            if (i == window.PAGE - 3) {
+                pages[i].className = "page rightBackwardsPageFinal";
+            } else if (i == window.PAGE - 4) {
+                pages[i].className = "page rightPageFinal";
+            } else if (i == window.PAGE) {
+                pages[i].className = "page leftBackwardsPageFinal";
+            } else if (i == window.PAGE + 2) {
+                pages[i].className = "page leftPageFinal";
+            } else {
+                pages[i].className = "page";
+            }
+            pages[i].style.zIndex = "";
+        }
+
+        pages[window.PAGE - 1].className = "page animatedLeftPage";
+        pages[window.PAGE - 2].className = "page animatedBackwardsLeftPage";
+
+        PAGE -= 2;
     }
-
-    pages[window.PAGE - 1].style.zIndex = "";
-    pages[window.PAGE - 2].style.zIndex = "";
-    pages[window.PAGE - 1].className = "page animatedLeftPage";
-    pages[window.PAGE - 2].className = "page animatedBackwardsLeftPage";
-    pages[window.PAGE - 3].style.zIndex = 2;
-    pages[window.PAGE - 4].style.zIndex = 1;
-
-    PAGE -= 2;
 }
 
 function flipLeft() {
@@ -85,15 +94,22 @@ function flipLeft() {
 
     if (window.PAGE < pages.length) {
         for (var i = 1; i < pages.length; i++) {
-            pages[i].style.zIndex = 0 - i;
+            if (i == window.PAGE - 1) {
+                pages[i].className = "page rightBackwardsPageFinal";
+            } else if (i == window.PAGE - 2) {
+                pages[i].className = "page rightPageFinal";
+            } else if (i == window.PAGE + 2) {
+                pages[i].className = "page leftBackwardsPageFinal";
+            } else if (i == window.PAGE + 3) {
+                pages[i].clasName = "page leftPageFinal";
+            } else {
+                pages[i].className = "page";
+            }
+            pages[i].style.zIndex = "";
         }
 
-        pages[window.PAGE].style.zIndex = "";
-        pages[window.PAGE + 1].style.zIndex = "";
         pages[window.PAGE].className = "page animatedRightPage";
         pages[window.PAGE + 1].className = "page animatedBackwardsRightPage";
-        pages[window.PAGE + 2].style.zIndex = 2;
-        pages[window.PAGE + 3].style.zIndex = 1;
 
         PAGE += 2;
     }
