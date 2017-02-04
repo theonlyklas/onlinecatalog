@@ -27,7 +27,8 @@ function delayedLoad(pdf, currentPage) {
             } else if (currentPage == 2) {
                 canvas.className = "page leftPageFinal"
             } else {
-                canvas.className = "page hidden";
+                canvas.className = "page";
+                canvas.style.zIndex = 0 - currentPage;
             }
 
 
@@ -61,48 +62,50 @@ function delayedLoad(pdf, currentPage) {
 //Helper Functions//
 
 //function to get next page
-function nextPage() {
-    var pages = document.getElementById('book').childNodes;
-
-    if (window.PAGE < pages.length) {
-        for (var i = 1; i < pages.length; i++) {
-            if (i == window.PAGE - 3 || i == window.PAGE - 4) {
-                pages[i].className = "page hidden";
-            } else if (i == window.PAGE - 1) {
-                pages[i].className = "page rightBackwardsPageFinal";
-            } else if (i == window.PAGE - 2) {
-                pages[i].className = "page rightPageFinal";
-            } else if (i == window.PAGE + 2) {
-                pages[i].className = "page leftBackwardsPageFinal";
-            }
-        }
-
-        pages[window.PAGE].className = "page animated animatedRightPage";
-        pages[window.PAGE + 1].className = "page animated animatedBackwardsRightPage";
-
-        PAGE += 2;
-    }
-}
-
 function prevPage() {
     var pages = document.getElementById('book').childNodes;
 
     if (window.PAGE < pages.length) {
-        for (var i = 1; i < pages.length; i++) {
-            if (i == window.PAGE + 1 || i == window.PAGE + 2) {
-                pages[i].className = "page hidden";
-            } else if (i == window.PAGE - 3) {
-                pages[i].className = "page rightBackwardsPageFinal";
-            } else if (i == window.PAGE - 4) {
-                pages[i].className = "page rightPageFinal";
-            } else if (i == window.PAGE) {
-                pages[i].className = "page leftBackwardsPageFinal";
-            }
-        }
+        pages[window.PAGE + 1].style.setProperty("z-index", 0 - window.PAGE, "important");
+        pages[window.PAGE + 2].style.setProperty("z-index", 0 - window.PAGE, "important");
 
+        if (window.PAGE > 4) {
+          pages[window.PAGE - 3].style.setProperty("z-index", 2, "important");
+          pages[window.PAGE - 4].style.setProperty("z-index", 1, "important");
+        }
+        pages[window.PAGE].style.setProperty("z-index", 2, "important");
+
+        pages[window.PAGE - 1].style.setProperty("z-index", "");
+        pages[window.PAGE - 2].style.setProperty("z-index", "");
         pages[window.PAGE - 1].className = "page animated animatedLeftPage";
         pages[window.PAGE - 2].className = "page animated animatedBackwardsLeftPage";
 
         PAGE -= 2;
+    }
+}
+
+function nextPage() {
+    var pages = document.getElementById('book').childNodes;
+
+    if (window.PAGE < pages.length) {
+        if (window.PAGE > 4) {
+          pages[window.PAGE - 3].style.setProperty("z-index", 0 - pages.length + window.PAGE, "important");
+          pages[window.PAGE - 4].style.setProperty("z-index", 0 - pages.length + window.PAGE, "important");
+        }
+        if (window.page > 2) {
+          pages[window.PAGE - 1].style.setProperty("z-index", 2, "important");
+          pages[window.PAGE - 2].style.setProperty("z-index", 1, "important");
+        }
+
+        //
+        pages[window.PAGE + 2].style.setProperty("z-index", 2, "important");
+
+        // begin animations
+        pages[window.PAGE].style.setProperty("z-index", "");
+        pages[window.PAGE + 1].style.setProperty("z-index", "");
+        pages[window.PAGE].className = "page animated animatedRightPage";
+        pages[window.PAGE + 1].className = "page animated animatedBackwardsRightPage";
+
+        PAGE += 2;
     }
 }
