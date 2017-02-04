@@ -65,16 +65,19 @@ function delayedLoad(pdf, currentPage) {
 function prevPage() {
     var pages = document.getElementById('book').childNodes;
 
-    if (window.PAGE < pages.length) {
-        pages[window.PAGE + 1].style.setProperty("z-index", 0 - window.PAGE, "important");
-        pages[window.PAGE + 2].style.setProperty("z-index", 0 - window.PAGE, "important");
-
+    if (window.PAGE > 2) {
+        if (window.PAGE < pages.length - 2) {
+          pages[window.PAGE + 1].style.setProperty("z-index", 0 - window.PAGE, "important");
+          pages[window.PAGE + 2].style.setProperty("z-index", 0 - window.PAGE, "important");
+        }
         if (window.PAGE > 4) {
           pages[window.PAGE - 3].style.setProperty("z-index", 2, "important");
           pages[window.PAGE - 4].style.setProperty("z-index", 1, "important");
         }
+
         pages[window.PAGE].style.setProperty("z-index", 2, "important");
 
+        // begin animations
         pages[window.PAGE - 1].style.setProperty("z-index", "");
         pages[window.PAGE - 2].style.setProperty("z-index", "");
         pages[window.PAGE - 1].className = "page animated animatedLeftPage";
@@ -89,8 +92,8 @@ function nextPage() {
 
     if (window.PAGE < pages.length) {
         if (window.PAGE > 4) {
-          pages[window.PAGE - 3].style.setProperty("z-index", 0 - pages.length + window.PAGE, "important");
-          pages[window.PAGE - 4].style.setProperty("z-index", 0 - pages.length + window.PAGE, "important");
+          pages[window.PAGE - 3].style.setProperty("z-index", -100 + window.PAGE, "important");
+          pages[window.PAGE - 4].style.setProperty("z-index", -100 + window.PAGE, "important");
         }
         if (window.page > 2) {
           pages[window.PAGE - 1].style.setProperty("z-index", 2, "important");
