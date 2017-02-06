@@ -1,11 +1,11 @@
 var PAGE;
 var PREVIOUS_DIRECTION;
-var FLIPPING_PAGES = 0;
 
 window.onload = function() {
     PAGE = 1;
 
     /* dynamically create CSS rules for z-index */
+    // was necessary when I was using 30+ z-indexes inefficiently
     var style = document.createElement('style');
     style.type = 'text/css';
     for (var i = 1; i < 3; i++) {
@@ -72,17 +72,13 @@ function prevPage() {
         if (currentPage < pages.length - 2) {
           if (previousDirection == "back") {
             window.setTimeout(function() {
-              pages[currentPage + 1].className = "page hidden";
               pages[currentPage].className = "page hidden";
-              window.FLIPPING_PAGES -= 2;
             }, 500);
           } else {
             pages[currentPage].className = "page zIndex2";
 
             window.setTimeout(function() {
-              console.log(pages[currentPage]);
               pages[currentPage].className = "page hidden";
-              console.log(pages[currentPage]);
             }, 500);
           }
         }
@@ -96,7 +92,7 @@ function prevPage() {
         pages[currentPage - 2].className = "page animated animatedBackwardsLeftPage";
 
         window.setTimeout(function() {
-          pages[currentPage - 1].className += " hidden";
+          pages[currentPage - 1].className = "page hidden";
         }, 250)
 
         PREVIOUS_DIRECTION = "back";
@@ -117,6 +113,10 @@ function nextPage() {
               }, 500);
             } else {
               pages[currentPage - 1].className = "leftPage zIndex2";
+
+              window.setTimeout(function() {
+                pages[currentPage - 1].className = "page hidden";
+              }, 500);
             }
         }
 
@@ -127,7 +127,7 @@ function nextPage() {
         pages[currentPage + 1].className = "page animated animatedBackwardsRightPage";
 
         window.setTimeout(function() {
-          pages[currentPage].className += " hidden";
+          pages[currentPage].className = "page hidden";
         }, 250)
 
         PREVIOUS_DIRECTION = "next";
