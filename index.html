@@ -5,36 +5,13 @@
     <script type="text/javascript" src="alex.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .openBook {
-            margin-top: 10vh !important;
-            width: 123.64vh !important;
-        }
-
-        .openBook .page {
-            float: left !important;
-            width: 50%!important;
-        }
-
-        .scale {
-            width: 75vw !important;
-            height: 48.5vw !important;
-        }
-
-        .last {
-            width: 61.82vh !important;
-            height: 80vh !important;
-        }
-
-        .last .page {
-            width: 100% !important;
-        }
-
         .page {
             position: absolute;
             top: 0;
             left: 50%;
             width: 50%;
-            height: 100%;
+            height: 71%;
+            padding-bottom: 29%;
             z-index: 0;
         }
 
@@ -43,16 +20,13 @@
             top: 0;
             left: 0%;
             width: 50%;
-            height: 100%;
+            height: 71%;
+            padding-bottom: 29%;
             z-index: 0;
         }
 
         .hidden {
             display: none;
-        }
-
-        .visible {
-            display: block;
         }
 
         .animated {
@@ -80,6 +54,7 @@
         @keyframes flipLeft {
             0% {
                 z-index: 100;
+                transform: translateX(0%) rotateY(0deg);
             }
             45% {
                 z-index: 100;
@@ -89,7 +64,6 @@
                 display: none;
             }
             100% {
-                transform: translateX(-100%) rotateY(180deg);
                 display: none;
             }
         }
@@ -97,7 +71,8 @@
         @keyframes flipRight {
             0% {
                 z-index: 100;
-                transform: translateX(-100%);
+                transform: translateX(-100%) rotateY(0deg);
+                ;
             }
             45% {
                 z-index: 100;
@@ -107,20 +82,20 @@
                 display: none;
             }
             100% {
-                transform: translateX(0%) rotateY(-180deg);
                 display: none;
             }
         }
 
         @keyframes backwardsFlipLeft {
             0% {
-                z-index: 98;
-                transform: rotateY(180deg);
+                display: none;
+                transform: translateX(0%) rotateY(180deg);
             }
             45% {
-                z-index: 98;
+                display: none;
             }
             50% {
+                display: block;
                 z-index: 100;
                 transform: translateX(-50%) rotateY(90deg);
             }
@@ -131,13 +106,14 @@
 
         @keyframes backwardsFlipRight {
             0% {
-                z-index: 98;
+                display: none;
                 transform: translateX(-100%) rotateY(-180deg);
             }
             45% {
-                z-index: 98;
+                display: none;
             }
             50% {
+                display: block;
                 z-index: 100;
                 transform: translateX(-50%) rotateY(-90deg);
             }
