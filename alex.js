@@ -1,37 +1,38 @@
 var PAGE;
-var PAGES;
-var CATALOG = PDFJS.getDocument('http://files.ramcomputers.uri.edu/bookstore/catalog/files/a.pdf');
+var PREVIOUS_DIRECTION;
+var FLIPPING_PAGES = 0;
 
 window.onload = function() {
     PAGE = 1;
 
+    /* dynamically create CSS rules for z-index */
+    var style = document.createElement('style');
+    style.type = 'text/css';
+    for (var i = 1; i < 3; i++) {
+      style.innerHTML += '.zIndex' + i.toString() + ' { z-index: ' + i.toString() + ' !important } \n';
+    }
+    document.getElementsByTagName('head')[0].appendChild(style);
+
     var pdf = PDFJS.getDocument('http://files.ramcomputers.uri.edu/bookstore/catalog/files/a.pdf').then(function(pdf) {
         delayedLoad(pdf, 1)
-        PAGES = pdf.numPages;
     });
 }
 
 function delayedLoad(pdf, currentPage) {
     setTimeout(function() {
-        var pageID = 'page-' + currentPage;
-
         pdf.getPage(currentPage).then(function(page) {
             // you can now use *page* here
             var scale = 2;
             var viewport = page.getViewport(scale);
             var canvas = document.createElement("canvas");
-            canvas.id = pageID;
 
             if (currentPage == 1) {
-                canvas.className = "page leftBackwardsPageFinal"
+                canvas.className = "page zIndex2"
             } else if (currentPage == 2) {
-                canvas.className = "page leftPageFinal"
+                canvas.className = "page zIndex1"
             } else {
-                canvas.className = "page";
-                canvas.style.zIndex = 0 - currentPage;
+                canvas.className = "page hidden";
             }
-
-
 
             // console.log(canvas);
             var context = canvas.getContext('2d');
@@ -64,51 +65,72 @@ function delayedLoad(pdf, currentPage) {
 //function to get next page
 function prevPage() {
     var pages = document.getElementById('book').childNodes;
+    var currentPage = window.PAGE;
+    var previousDirection = window.PREVIOUS_DIRECTION;
 
-    if (window.PAGE > 2) {
-        if (window.PAGE < pages.length - 2) {
-          pages[window.PAGE + 1].style.setProperty("z-index", 0 - window.PAGE, "important");
-          pages[window.PAGE + 2].style.setProperty("z-index", 0 - window.PAGE, "important");
-        }
-        if (window.PAGE > 4) {
-          pages[window.PAGE - 3].style.setProperty("z-index", 2, "important");
-          pages[window.PAGE - 4].style.setProperty("z-index", 1, "important");
+    if (currentPage > 2) {
+        if (currentPage < pages.length - 2) {
+          if (previousDirection == "back") {
+            window.setTimeout(function() {
+              pages[currentPage + 1].className = "page hidden";
+              pages[currentPage].className = "page hidden";
+              window.FLIPPING_PAGES -= 2;
+            }, 500);
+          } else {
+            pages[currentPage].className = "page zIndex2";
+
+            window.setTimeout(function() {
+              console.log(pages[currentPage]);
+              pages[currentPage].className = "page hidden";
+              console.log(pages[currentPage]);
+            }, 500);
+          }
         }
 
-        pages[window.PAGE].style.setProperty("z-index", 2, "important");
+        if (currentPage > 3) {
+            pages[currentPage - 3].className = "leftPage zIndex2";
+        }
 
         // begin animations
-        pages[window.PAGE - 1].style.setProperty("z-index", "");
-        pages[window.PAGE - 2].style.setProperty("z-index", "");
-        pages[window.PAGE - 1].className = "page animated animatedLeftPage";
-        pages[window.PAGE - 2].className = "page animated animatedBackwardsLeftPage";
+        pages[currentPage - 1].className = "page animated animatedLeftPage";
+        pages[currentPage - 2].className = "page animated animatedBackwardsLeftPage";
 
+        window.setTimeout(function() {
+          pages[currentPage - 1].className += " hidden";
+        }, 250)
+
+        PREVIOUS_DIRECTION = "back";
         PAGE -= 2;
     }
 }
 
 function nextPage() {
     var pages = document.getElementById('book').childNodes;
+    var currentPage = window.PAGE;
+    var previousDirection = window.PREVIOUS_DIRECTION;
 
-    if (window.PAGE < pages.length) {
-        if (window.PAGE > 4) {
-          pages[window.PAGE - 3].style.setProperty("z-index", -100 + window.PAGE, "important");
-          pages[window.PAGE - 4].style.setProperty("z-index", -100 + window.PAGE, "important");
-        }
-        if (window.page > 2) {
-          pages[window.PAGE - 1].style.setProperty("z-index", 2, "important");
-          pages[window.PAGE - 2].style.setProperty("z-index", 1, "important");
+    if (currentPage < pages.length - 2) {
+        if (currentPage > 2) {
+            if (previousDirection == "next") {
+              window.setTimeout(function() {
+                pages[currentPage - 1].className = "page hidden";
+              }, 500);
+            } else {
+              pages[currentPage - 1].className = "leftPage zIndex2";
+            }
         }
 
-        //
-        pages[window.PAGE + 2].style.setProperty("z-index", 2, "important");
+        pages[currentPage + 2].className = "page zIndex2";
 
         // begin animations
-        pages[window.PAGE].style.setProperty("z-index", "");
-        pages[window.PAGE + 1].style.setProperty("z-index", "");
-        pages[window.PAGE].className = "page animated animatedRightPage";
-        pages[window.PAGE + 1].className = "page animated animatedBackwardsRightPage";
+        pages[currentPage].className = "page animated animatedRightPage";
+        pages[currentPage + 1].className = "page animated animatedBackwardsRightPage";
 
+        window.setTimeout(function() {
+          pages[currentPage].className += " hidden";
+        }, 250)
+
+        PREVIOUS_DIRECTION = "next";
         PAGE += 2;
     }
 }

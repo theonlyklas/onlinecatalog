@@ -35,14 +35,28 @@
             left: 50%;
             width: 50%;
             height: 100%;
+            z-index: 0;
+        }
+
+        .leftPage {
+            position: absolute;
+            top: 0;
+            left: 0%;
+            width: 50%;
+            height: 100%;
+            z-index: 0;
         }
 
         .hidden {
             display: none;
         }
 
+        .visible {
+            display: block;
+        }
+
         .animated {
-            animation-duration: 1s;
+            animation-duration: 0.5s;
             animation-fill-mode: forwards;
             animation-timing-function: ease-in;
         }
@@ -63,117 +77,88 @@
             animation-name: backwardsFlipLeft;
         }
 
-        .rightPageFinal {
-            z-index: 1;
-            transform: translateX(-100%) rotateY(180deg);
-        }
-
-        .rightBackwardsPageFinal {
-            z-index: 2;
-            transform: translateX(-100%) rotateY(0deg);
-        }
-
-        .leftPageFinal {
-            z-index: 1;
-            transform: translateX(0%) rotateY(180deg);
-        }
-
-        .leftBackwardsPageFinal {
-            z-index: 2;
-            transform: translateX(0%) rotateY(0deg);
-        }
-
         @keyframes flipLeft {
             0% {
-                z-index: 5;
+                z-index: 100;
             }
             45% {
-                z-index: 5;
+                z-index: 100;
             }
             50% {
-                z-index: 3;
                 transform: translateX(-50%) rotateY(90deg);
+                display: none;
             }
             100% {
-                z-index: 3;
                 transform: translateX(-100%) rotateY(180deg);
+                display: none;
             }
         }
 
         @keyframes flipRight {
             0% {
-                z-index: 5;
+                z-index: 100;
                 transform: translateX(-100%);
             }
             45% {
-                z-index: 5;
+                z-index: 100;
             }
             50% {
-                z-index: 3;
                 transform: translateX(-50%) rotateY(-90deg);
+                display: none;
             }
             100% {
-                z-index: 3;
                 transform: translateX(0%) rotateY(-180deg);
+                display: none;
             }
         }
 
         @keyframes backwardsFlipLeft {
             0% {
-                z-index: 3;
+                z-index: 98;
                 transform: rotateY(180deg);
             }
             45% {
-                z-index: 3;
+                z-index: 98;
             }
             50% {
-                z-index: 5;
+                z-index: 100;
                 transform: translateX(-50%) rotateY(90deg);
             }
             100% {
-                z-index: 5;
                 transform: translateX(-100%) rotateY(0deg);
             }
         }
 
         @keyframes backwardsFlipRight {
             0% {
-                z-index: 3;
+                z-index: 98;
                 transform: translateX(-100%) rotateY(-180deg);
             }
             45% {
-                z-index: 3;
+                z-index: 98;
             }
             50% {
-                z-index: 5;
+                z-index: 100;
                 transform: translateX(-50%) rotateY(-90deg);
             }
             100% {
-                z-index: 5;
                 transform: translateX(0%) rotateY(0deg);
             }
         }
 
-        #test {
-            left: 50%;
-            width: 5%;
-            height: 10%;
-        }
         /*Button Stuff*/
-
         #left {
             position: absolute;
             top: 35vh;
-            z-index: 10000;
+            z-index: 101;
         }
 
         #right {
             position: absolute;
             top: 35vh;
             right: 0;
-            z-index: 10000;
+            z-index: 101;
         }
-        /* stuff */
     </style>
 </head>
 
