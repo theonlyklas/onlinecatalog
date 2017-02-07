@@ -10,19 +10,12 @@
             top: 0;
             left: 50%;
             width: 50%;
-            height: 71%;
-            padding-bottom: 29%;
+            height: 90%;
             z-index: 0;
         }
 
-        .leftPage {
-            position: absolute;
-            top: 0;
-            left: 0%;
-            width: 50%;
-            height: 71%;
-            padding-bottom: 29%;
-            z-index: 0;
+        .left {
+            left: 0% !important;
         }
 
         .hidden {
@@ -51,13 +44,21 @@
             animation-name: backwardsFlipLeft;
         }
 
+        .zIndex1 {
+            z-index: 1 !important;
+        }
+
+        .zIndex2 {
+            z-index: 2 !important;
+        }
+
         @keyframes flipLeft {
             0% {
-                z-index: 100;
+                z-index: 3;
                 transform: translateX(0%) rotateY(0deg);
             }
             45% {
-                z-index: 100;
+                z-index: 3;
             }
             50% {
                 transform: translateX(-50%) rotateY(90deg);
@@ -70,12 +71,12 @@
 
         @keyframes flipRight {
             0% {
-                z-index: 100;
+                z-index: 3;
                 transform: translateX(-100%) rotateY(0deg);
                 ;
             }
             45% {
-                z-index: 100;
+                z-index: 3;
             }
             50% {
                 transform: translateX(-50%) rotateY(-90deg);
@@ -96,7 +97,7 @@
             }
             50% {
                 display: block;
-                z-index: 100;
+                z-index: 3;
                 transform: translateX(-50%) rotateY(90deg);
             }
             100% {
@@ -114,7 +115,7 @@
             }
             50% {
                 display: block;
-                z-index: 100;
+                z-index: 3;
                 transform: translateX(-50%) rotateY(-90deg);
             }
             100% {
@@ -126,14 +127,50 @@
         #left {
             position: absolute;
             top: 35vh;
-            z-index: 101;
+            z-index: 4;
         }
 
         #right {
             position: absolute;
             top: 35vh;
             right: 0;
-            z-index: 101;
+            z-index: 4;
+        }
+
+        /* Navigation bar */
+        .navigation {
+          position: absolute;
+          bottom: 0;
+          height: 10%;
+          width: 100%;
+        }
+
+        #navigationHidden {
+            overflow-x: hidden;
+        }
+
+        #navigationShown {
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+            z-index: -1;
+        }
+
+        #navigationIcon {
+          border-radius: 5vh;
+          background-color: rgba(255,255,255,1);
+          overflow: hidden;
+          font-size: 1vh;
+        }
+
+        #loadingText p {
+          font-size: 10vh;
+          text-align: center;
+          color: rgba(100,100,100,0.5);
+        }
+
+        .navigationButton {
+
         }
     </style>
 </head>
@@ -143,6 +180,13 @@
     <div id="book">
     </div>
     <button id="right" onclick="nextPage()">></button>
+    <div id="navigationHidden" class="navigation">
+      <div id="navigationShown" class="navigation">
+      </div>
+      <div id="loadingText">
+        <p>LOADING...</p>
+      </div>
+    </div>
 </body>
 
 </html>
