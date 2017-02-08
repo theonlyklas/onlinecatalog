@@ -1,28 +1,32 @@
 <html>
 
 <head>
+    <style>
+        /* used for page aspect ratio */
+    </style>
     <script type="text/javascript" src="js/pdf.js"></script>
     <script type="text/javascript" src="alex.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <style>
+        #book {
+            height: 90%;
+            overflow: hidden;
+            background-image: url("files/img/background.jpg");
+            background-size: contain;
+        }
+
         .page {
             position: absolute;
             top: 0;
             left: 50%;
             width: 50%;
-            height: 71%;
-            padding-bottom: 29%;
+            height: 90%;
             z-index: 0;
         }
 
-        .leftPage {
-            position: absolute;
-            top: 0;
-            left: 0%;
-            width: 50%;
-            height: 71%;
-            padding-bottom: 29%;
-            z-index: 0;
+        .left {
+            right: 50% !important;
+            left: initial !important;
         }
 
         .hidden {
@@ -51,13 +55,21 @@
             animation-name: backwardsFlipLeft;
         }
 
+        .zIndex1 {
+            z-index: 1 !important;
+        }
+
+        .zIndex2 {
+            z-index: 2 !important;
+        }
+
         @keyframes flipLeft {
             0% {
-                z-index: 100;
+                z-index: 3;
                 transform: translateX(0%) rotateY(0deg);
             }
             45% {
-                z-index: 100;
+                z-index: 3;
             }
             50% {
                 transform: translateX(-50%) rotateY(90deg);
@@ -70,12 +82,12 @@
 
         @keyframes flipRight {
             0% {
-                z-index: 100;
+                z-index: 3;
                 transform: translateX(-100%) rotateY(0deg);
                 ;
             }
             45% {
-                z-index: 100;
+                z-index: 3;
             }
             50% {
                 transform: translateX(-50%) rotateY(-90deg);
@@ -96,7 +108,7 @@
             }
             50% {
                 display: block;
-                z-index: 100;
+                z-index: 3;
                 transform: translateX(-50%) rotateY(90deg);
             }
             100% {
@@ -114,27 +126,70 @@
             }
             50% {
                 display: block;
-                z-index: 100;
+                z-index: 3;
                 transform: translateX(-50%) rotateY(-90deg);
             }
             100% {
                 transform: translateX(0%) rotateY(0deg);
             }
         }
-
         /*Button Stuff*/
+
         #left {
             position: absolute;
             top: 35vh;
-            z-index: 101;
+            z-index: 4;
         }
 
         #right {
             position: absolute;
             top: 35vh;
             right: 0;
-            z-index: 101;
+            z-index: 4;
         }
+        /* Navigation bar */
+
+        .navigation {
+            position: absolute;
+            bottom: 0;
+            height: 10%;
+            width: 100%;
+        }
+
+        #navigationHidden {
+            overflow: hidden;
+        }
+
+        #navigationShown {
+            height: 100%;
+            width: 200%;
+            overflow-y: hidden;
+            overflow-x: scroll;
+            -webkit-overflow-scrolling: touch;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 5;
+        }
+
+        #navigationIcon {
+            float: left;
+            width: 6vh;
+            height: 6vh;
+            margin: 2vh;
+            top: 25%;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 1);
+            font-size: 3vh;
+            text-align: center;
+        }
+
+        #loadingText p {
+            font-size: 10vh;
+            text-align: center;
+            color: rgba(100, 100, 100, 0.5);
+            z-index: 6
+        }
+
+        .navigationButton {}
     </style>
 </head>
 
@@ -143,6 +198,10 @@
     <div id="book">
     </div>
     <button id="right" onclick="nextPage()">></button>
+    <div id="navigationHidden" class="navigation">
+        <div id="navigationShown" class="navigation">
+        </div>
+    </div>
 </body>
 
 </html>
