@@ -1,10 +1,20 @@
 <html>
 
 <head>
+    <style>
+        /* used for page aspect ratio */
+    </style>
     <script type="text/javascript" src="js/pdf.js"></script>
     <script type="text/javascript" src="alex.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <style>
+        #book {
+            height: 90%;
+            overflow: hidden;
+            background-image: url("files/img/background.jpg");
+            background-size: contain;
+        }
+
         .page {
             position: absolute;
             top: 0;
@@ -15,7 +25,8 @@
         }
 
         .left {
-            left: 0% !important;
+            right: 50% !important;
+            left: initial !important;
         }
 
         .hidden {
@@ -122,8 +133,8 @@
                 transform: translateX(0%) rotateY(0deg);
             }
         }
-
         /*Button Stuff*/
+
         #left {
             position: absolute;
             top: 35vh;
@@ -136,42 +147,49 @@
             right: 0;
             z-index: 4;
         }
-
         /* Navigation bar */
+
         .navigation {
-          position: absolute;
-          bottom: 0;
-          height: 10%;
-          width: 100%;
+            position: absolute;
+            bottom: 0;
+            height: 10%;
+            width: 100%;
         }
 
         #navigationHidden {
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         #navigationShown {
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.9);
-            z-index: -1;
+            width: 200%;
+            overflow-y: hidden;
+            overflow-x: scroll;
+            -webkit-overflow-scrolling: touch;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 5;
         }
 
         #navigationIcon {
-          border-radius: 5vh;
-          background-color: rgba(255,255,255,1);
-          overflow: hidden;
-          font-size: 1vh;
+            float: left;
+            width: 6vh;
+            height: 6vh;
+            margin: 2vh;
+            top: 25%;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 1);
+            font-size: 3vh;
+            text-align: center;
         }
 
         #loadingText p {
-          font-size: 10vh;
-          text-align: center;
-          color: rgba(100,100,100,0.5);
+            font-size: 10vh;
+            text-align: center;
+            color: rgba(100, 100, 100, 0.5);
+            z-index: 6
         }
 
-        .navigationButton {
-
-        }
+        .navigationButton {}
     </style>
 </head>
 
@@ -181,11 +199,8 @@
     </div>
     <button id="right" onclick="nextPage()">></button>
     <div id="navigationHidden" class="navigation">
-      <div id="navigationShown" class="navigation">
-      </div>
-      <div id="loadingText">
-        <p>LOADING...</p>
-      </div>
+        <div id="navigationShown" class="navigation">
+        </div>
     </div>
 </body>
 

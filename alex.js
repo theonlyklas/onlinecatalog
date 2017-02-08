@@ -1,20 +1,10 @@
 var PAGE;
 var PREVIOUS_DIRECTION;
 var PAGE_ASPECT_RATIO = 0.7;
+var ZOOMED = false;
 
 window.onload = function() {
     PAGE = 1;
-
-    // dynamically create CSS rules for z-index
-    // was necessary when I was using 30+ z-indexes inefficiently
-    /*
-    var style = document.createElement('style');
-    style.type = 'text/css';
-    for (var i = 1; i < 3; i++) {
-      style.innerHTML += '.zIndex' + i.toString() + ' { z-index: ' + i.toString() + ' !important } \n';
-    }
-    document.getElementsByTagName('head')[0].appendChild(style);
-    */
 
     var pdf = PDFJS.getDocument('http://files.ramcomputers.uri.edu/bookstore/catalog/files/a.pdf').then(function(pdf) {
         delayedLoad(pdf, 1)
@@ -23,24 +13,32 @@ window.onload = function() {
 
 // fixes aspect ratio of displayed pages
 function fixAspectRatio(currentPage) {
-    var page = document.getElementById("book").childNodes[currentPage];
-    page.style.width = "50%";
-    page.style.height = "90%";
-    var pageBoundingClientRect = page.getBoundingClientRect();
     var aspectRatio = window.PAGE_ASPECT_RATIO;
+    var book = document.getElementById("book");
+    var bookBoundingClientRect = book.getBoundingClientRect();
+    var pageStyle = document.getElementsByTagName("head")[0].childNodes[1];
 
-    if (pageBoundingClientRect.width / pageBoundingClientRect.height > aspectRatio) {
-        var newWidth = pageBoundingClientRect.height * aspectRatio;
-        var newHeight = newWidth / aspectRatio;
-        // var heightPadding = (window.innerHeight - newHeight) / 2;
-        page.style.width = newWidth + "px";
-        page.style.height = newHeight + "px";
+    newHeight = bookBoundingClientRect.height;
+    newWidth = newHeight * aspectRatio;
+    newTop = (bookBoundingClientRect.height - newHeight) / 2;
+
+    pageStyle.innerHTML = ".page { width: " + newWidth + "px !important; height: " + newHeight + "px !important; top: " + newTop + "px !important;}";
+
+    return true;
+}
+
+function addNavigationIcon(currentPage) {
+    var navIcon = document.createElement("div");
+    var navBar = document.getElementById("navigationShown");
+    console.log(currentPage);
+    navIcon.id = "navigationIcon";
+    if (currentPage == 1) {
+        navIcon.innerHTML = "COVER";
     } else {
-        var newHeight = pageBoundingClientRect.width / aspectRatio;
-        var newWidth = newHeight * aspectRatio;
-        page.style.height = newHeight + "px";
-        page.style.width = newWidth + "px";
+        navIcon.innerHTML = currentPage + "+" + (currentPage + 1);
     }
+
+    navBar.appendChild(navIcon);
 }
 
 function delayedLoad(pdf, currentPage) {
@@ -77,6 +75,9 @@ function delayedLoad(pdf, currentPage) {
 
             if (currentPage == 1) {
                 fixAspectRatio(currentPage);
+                addNavigationIcon(currentPage);
+            } else if (currentPage % 2 == 1) {
+                addNavigationIcon(currentPage);
             }
 
             currentPage++;
