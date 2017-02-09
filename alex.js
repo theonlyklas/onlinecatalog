@@ -11,6 +11,10 @@ window.onload = function() {
     });
 }
 
+window.onresize = function() {
+    fixAspectRatio(window.PAGE);
+}
+
 // fixes aspect ratio of displayed pages
 function fixAspectRatio(currentPage) {
     var aspectRatio = window.PAGE_ASPECT_RATIO;
@@ -18,27 +22,42 @@ function fixAspectRatio(currentPage) {
     var bookBoundingClientRect = book.getBoundingClientRect();
     var pageStyle = document.getElementsByTagName("head")[0].childNodes[1];
 
-    newHeight = bookBoundingClientRect.height;
-    newWidth = newHeight * aspectRatio;
-    newTop = (bookBoundingClientRect.height - newHeight) / 2;
+    if (window.innerWidth > window.innerHeight) {
+      newHeight = bookBoundingClientRect.height;
+      newWidth = newHeight * aspectRatio;
+      newTop = 0;
+    } else {
+      newWidth = bookBoundingClientRect.width / 2;
+      newHeight = newWidth / aspectRatio;
+      newTop = (bookBoundingClientRect.height - newHeight) / 2;
+    }
 
     pageStyle.innerHTML = ".page { width: " + newWidth + "px !important; height: " + newHeight + "px !important; top: " + newTop + "px !important;}";
-
-    return true;
 }
 
 function addNavigationIcon(currentPage) {
     var navIcon = document.createElement("div");
     var navBar = document.getElementById("navigationShown");
-    console.log(currentPage);
+
     navIcon.id = "navigationIcon";
+    navIcon.setAttribute('onclick', 'loadPage(' + currentPage + ')');
+
     if (currentPage == 1) {
-        navIcon.innerHTML = "COVER";
+        navIcon.innerHTML = "<p>COVER</p>";
+    } else if (currentPage == 3) {
+        navIcon.style.lineHeight = "2.2vh";
+        navIcon.innerHTML = "<p>INDEX<br>& 1</p>";
+        navIcon.childNodes[0].style.paddingTop = "1.5vh";
     } else {
-        navIcon.innerHTML = currentPage + "+" + (currentPage + 1);
+        navIcon.innerHTML = "<p>" + (currentPage - 3) + " & " + (currentPage - 2) + "</p>";
     }
 
+    navBar.style.width = (Math.floor(currentPage / 2) + 1) * 10 + "vh";
     navBar.appendChild(navIcon);
+}
+
+function loadPage(currentPage) {
+  return true;
 }
 
 function delayedLoad(pdf, currentPage) {
@@ -70,9 +89,7 @@ function delayedLoad(pdf, currentPage) {
             document.getElementById("book").appendChild(canvas);
             console.log("page " + currentPage + " rendered");
 
-            // add buttons to navigation bar
-            var navButton = document.createElement("div");
-
+            // set initial aspect ratio, add buttons to navigation bar
             if (currentPage == 1) {
                 fixAspectRatio(currentPage);
                 addNavigationIcon(currentPage);
@@ -163,8 +180,4 @@ function nextPage() {
         PREVIOUS_DIRECTION = "next";
         PAGE += 2;
     }
-}
-
-window.onresize = function() {
-    fixAspectRatio(window.PAGE);
 }
