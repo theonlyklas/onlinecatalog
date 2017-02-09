@@ -19,11 +19,10 @@ window.onresize = function() {
 function fixAspectRatio(currentPage) {
     var aspectRatio = window.PAGE_ASPECT_RATIO;
     var book = document.getElementById("book");
-    var bookWidthToWindowWidthRatio = 0.8;
     var bookBoundingClientRect = book.getBoundingClientRect();
     var pageStyle = document.getElementsByTagName("head")[0].childNodes[1];
 
-    if (window.innerWidth * bookWidthToWindowWidthRatio > window.innerHeight) {
+    if (bookBoundingClientRect.width > window.innerHeight) {
       newHeight = bookBoundingClientRect.height;
       newWidth = newHeight * aspectRatio;
       newTop = 0;
