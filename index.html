@@ -1,32 +1,47 @@
 <html>
+<!-- Written by Jason Klas -->
+<!-- https://github.com/theonlyklas -->
 
 <head>
     <style>
-        /* used for page aspect ratio */
+        /* used for page aspect ratio, changed via JS */
     </style>
     <script type="text/javascript" src="js/pdf.js"></script>
     <script type="text/javascript" src="alex.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        #book {
-            height: 90%;
-            overflow: hidden;
+        html {
             background-image: url("files/img/background.jpg");
-            background-size: contain;
+            background-size: cover;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow: hidden;
+            /* I thought browsers were good enough that I didn't need to do this anymore :( */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        #book {
+            position: absolute;
+            top: 10%;
+            left: 5%;
+            width: 90%;
+            height: 80%;
         }
 
         .page {
             position: absolute;
             top: 0;
             left: 50%;
-            width: 50%;
-            height: 90%;
             z-index: 0;
+            box-shadow: 1vh 1vh 1vh black;
         }
 
         .left {
             right: 50% !important;
             left: initial !important;
+            box-shadow: -1vh 1vh 1vh black;
         }
 
         .hidden {
@@ -110,9 +125,11 @@
                 display: block;
                 z-index: 3;
                 transform: translateX(-50%) rotateY(90deg);
+                box-shadow: 0vh 0vh 0vh black;
             }
             100% {
                 transform: translateX(-100%) rotateY(0deg);
+                box-shadow: -1vh 1vh 1vh black;
             }
         }
 
@@ -128,24 +145,36 @@
                 display: block;
                 z-index: 3;
                 transform: translateX(-50%) rotateY(-90deg);
+                box-shadow: 0vh 0vh 0vh black;
             }
             100% {
                 transform: translateX(0%) rotateY(0deg);
+                box-shadow: 1vh 1vh 1vh black;
             }
         }
         /*Button Stuff*/
 
-        #left {
+        .arrow {
             position: absolute;
-            top: 35vh;
-            z-index: 4;
+            top: calc(50% - 5vw);
+            z-index: 5;
+            height: 10vw;
+            width: 10vw;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            line-height: 10vw;
+            font-size: 10vw;
+            text-align: center;
+            color: rgba(0, 0, 0, 0.5);
+            box-shadow: 0vw 0.2vw 0.2vw 0.2vw black;
         }
 
-        #right {
-            position: absolute;
-            top: 35vh;
-            right: 0;
-            z-index: 4;
+        .arrowLeft {
+            left: 2vw;
+        }
+
+        .arrowRight {
+            right: 2vw;
         }
         /* Navigation bar */
 
@@ -157,47 +186,47 @@
         }
 
         #navigationHidden {
-            overflow: hidden;
+            overflow-x: scroll;
+            overflow-y: hidden;
+            height: calc(10% + 30px);
+            bottom: -30px;
         }
 
         #navigationShown {
+            top: 0;
             height: 100%;
-            width: 200%;
-            overflow-y: hidden;
-            overflow-x: scroll;
-            -webkit-overflow-scrolling: touch;
-            background-color: rgba(0, 0, 0, 0.9);
+            width: 10vh;
+            overflow: hidden;
             z-index: 5;
         }
 
         #navigationIcon {
+            display: inline-block;
             float: left;
-            width: 6vh;
-            height: 6vh;
-            margin: 2vh;
+            width: 7vh;
+            height: 7vh;
+            margin: 1.5vh;
             top: 25%;
             border-radius: 50%;
-            background-color: rgba(255, 255, 255, 1);
-            font-size: 3vh;
+            background-color: rgba(255, 255, 255, 0.8);
+            font-size: 1.8vh;
+            font-weight: bold;
             text-align: center;
+            line-height: 7vh;
+            box-shadow: 0vw 0.2vh 0.2vh 0.2vh black;
         }
-
-        #loadingText p {
-            font-size: 10vh;
-            text-align: center;
-            color: rgba(100, 100, 100, 0.5);
-            z-index: 6
-        }
-
-        .navigationButton {}
     </style>
 </head>
 
 <body>
-    <button id="left" onclick="prevPage()"><</button>
-    <div id="book">
+    <div class="arrow arrowLeft" onclick="prevPage()">
+        <p>
+            <</p>
     </div>
-    <button id="right" onclick="nextPage()">></button>
+    <div id="book"> </div>
+    <div class="arrow arrowRight" onclick="nextPage()">
+        <p>></p>
+    </div>
     <div id="navigationHidden" class="navigation">
         <div id="navigationShown" class="navigation">
         </div>
