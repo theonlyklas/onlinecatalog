@@ -22,7 +22,7 @@ function fixAspectRatio(currentPage) {
     var bookBoundingClientRect = book.getBoundingClientRect();
     var pageStyle = document.getElementsByTagName("head")[0].childNodes[1];
 
-    if (window.innerWidth > window.innerHeight) {
+    if (bookBoundingClientRect.width > window.innerHeight) {
       newHeight = bookBoundingClientRect.height;
       newWidth = newHeight * aspectRatio;
       newTop = 0;
@@ -56,8 +56,42 @@ function addNavigationIcon(currentPage) {
     navBar.appendChild(navIcon);
 }
 
-function loadPage(currentPage) {
-  return true;
+function loadPage(desiredPage) {
+  var pages = document.getElementById('book').childNodes;
+  var currentPage = window.PAGE;
+
+  if (desiredPage > currentPage) {
+
+    pages[currentPage].className = "page animated animatedRightPage";
+    pages[desiredPage - 1].className = "page animated animatedBackwardsRightPage";
+
+    pages[desiredPage].className = "page zIndex1";
+
+    window.setTimeout(function() {
+      pages[currentPage - 1].className = "page hidden";
+    }, 450);
+
+    window.PREVIOUS_DIRECTION = "next";
+    window.PAGE = desiredPage;
+
+  } else if (desiredPage < currentPage) {
+
+    pages[currentPage - 1].className = "page animated animatedLeftPage";
+    pages[desiredPage].className = "page animated animatedBackwardsLeftPage";
+
+    pages[desiredPage - 1].className = "page left zIndex1";
+
+    window.setTimeout(function() {
+      pages[currentPage - 1].className = "page hidden";
+    }, 250);
+
+    window.setTimeout(function() {
+      pages[currentPage].className = "page hidden";
+    }, 450)
+
+    window.PREVIOUS_DIRECTION = "back"
+    window.PAGE = desiredPage;
+  }
 }
 
 function delayedLoad(pdf, currentPage) {
@@ -120,13 +154,13 @@ function prevPage() {
             if (previousDirection == "back") {
                 window.setTimeout(function() {
                     pages[currentPage].className = "page hidden";
-                }, 460);
+                }, 450);
             } else {
                 pages[currentPage].className = "page zIndex1";
 
                 window.setTimeout(function() {
                     pages[currentPage].className = "page hidden";
-                }, 460);
+                }, 450);
             }
         }
 
