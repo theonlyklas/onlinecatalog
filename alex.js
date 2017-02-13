@@ -68,7 +68,7 @@ function loadPage(desiredPage) {
     pages[desiredPage].className = "page zIndex1";
 
     window.setTimeout(function() {
-      pages[currentPage - 1].className = "page hidden";
+      pages[currentPage - 1].className = "hidden";
     }, 450);
 
     window.PREVIOUS_DIRECTION = "next";
@@ -82,11 +82,11 @@ function loadPage(desiredPage) {
     pages[desiredPage - 1].className = "page left zIndex1";
 
     window.setTimeout(function() {
-      pages[currentPage - 1].className = "page hidden";
+      pages[currentPage - 1].className = "hidden";
     }, 250);
 
     window.setTimeout(function() {
-      pages[currentPage].className = "page hidden";
+      pages[currentPage].className = "hidden";
     }, 450)
 
     window.PREVIOUS_DIRECTION = "back"
@@ -105,7 +105,7 @@ function delayedLoad(pdf, currentPage) {
             if (currentPage == 1) {
                 canvas.className = "page"
             } else {
-                canvas.className = "page hidden";
+                canvas.className = "hidden";
             }
 
             var context = canvas.getContext('2d');
@@ -153,13 +153,13 @@ function prevPage() {
         if (currentPage < pages.length) {
             if (previousDirection == "back") {
                 window.setTimeout(function() {
-                    pages[currentPage].className = "page hidden";
+                    pages[currentPage].className = "hidden";
                 }, 450);
             } else {
                 pages[currentPage].className = "page zIndex1";
 
                 window.setTimeout(function() {
-                    pages[currentPage].className = "page hidden";
+                    pages[currentPage].className = "hidden";
                 }, 450);
             }
         }
@@ -173,7 +173,7 @@ function prevPage() {
         }
 
         window.setTimeout(function() {
-            pages[currentPage - 1].className = "page hidden";
+            pages[currentPage - 1].className = "hidden";
         }, 250)
 
         PREVIOUS_DIRECTION = "back";
@@ -190,13 +190,13 @@ function nextPage() {
         if (currentPage > 2) {
             if (previousDirection == "next") {
                 window.setTimeout(function() {
-                    pages[currentPage - 1].className = "page hidden";
+                    pages[currentPage - 1].className = "hidden";
                 }, 500);
             } else {
                 pages[currentPage - 1].className = "page left zIndex1";
 
                 window.setTimeout(function() {
-                    pages[currentPage - 1].className = "page hidden";
+                    pages[currentPage - 1].className = "hidden";
                 }, 500);
             }
         }
@@ -208,7 +208,7 @@ function nextPage() {
         pages[currentPage + 2].className = "page zIndex1";
 
         window.setTimeout(function() {
-            pages[currentPage].className = "page hidden";
+            pages[currentPage].className = "hidden";
         }, 250)
 
         PREVIOUS_DIRECTION = "next";
