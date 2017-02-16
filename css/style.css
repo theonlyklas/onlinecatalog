@@ -1,4 +1,6 @@
+â—˜
 /* Start off with a CSS reset...*/
+
 
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
@@ -43,13 +45,16 @@ table {
     border-spacing: 0;
 }
 
+
 /*  Jason's Customizationx */
+
 
 /* make body fullscreen */
 
 html, body {
-  height: 100%;
-  min-height: 100%;
+    height: 100%;
+    min-height: 100%;
+    overflow: hidden;
 }
 
 html {
@@ -110,6 +115,14 @@ html {
     animation-name: backwardsFlipLeft;
 }
 
+.animatedHiddenPage {
+    animation-name: hidePage;
+}
+
+.animatedFastHiddenPage {
+    animation-name: hidePageFast;
+}
+
 .zIndex1 {
     z-index: 1 !important;
 }
@@ -119,36 +132,62 @@ html {
 }
 
 @keyFrames hidePage {
-  0% {
-
-  }
-}
-
-@keyframes flipLeft {
     0% {
-        z-index: 3;
-        transform: translateX(0%) rotateY(0deg);
+        display: block;
     }
-    50% {
-        transform: translateX(-50%) rotateY(90deg);
+    98% {
+        display: block;
+    }
+    99% {
         display: none;
     }
     100% {
         display: none;
+    }
+}
+
+@keyframes hidePageFast {
+    0% {
+        display: block;
+    }
+    49% {
+        display: block;
+    }
+    50% {
+        display: none;
+    }
+    100% {
+        display: none;
+    }
+}
+
+@keyframes flipLeft {
+    0% {
+        z-index: 1;
+        transform: translateX(0%) rotateY(0deg);
+    }
+    50% {
+        z-index: 100;
+        transform: translateX(-50%) rotateY(90deg);
+    }
+    100% {
+        display: none;
+        transform: translateX(-50%) rotateY(90deg)
     }
 }
 
 @keyframes flipRight {
     0% {
-        z-index: 3;
+        z-index: 1;
         transform: translateX(-100%) rotateY(0deg);
     }
     50% {
-        transform: translateX(-50%) rotateY(-90deg);
-        display: none;
+        z-index: 100;
+        transform: translateX(-50%) rotateY(90deg);
     }
     100% {
         display: none;
+        transform: translateX(-50%) rotateY(90deg);
     }
 }
 
@@ -157,13 +196,16 @@ html {
         display: none;
         transform: translateX(0%) rotateY(180deg);
     }
-    50% {
-        display: block;
-        z-index: 3;
+    50% { z-index: 1;
         transform: translateX(-50%) rotateY(90deg);
         box-shadow: 0vh 0vh 0vh black;
     }
+    51% {
+        z-index: 100;
+    }
     100% {
+        z-index: 1;
+        display: block;
         transform: translateX(-100%) rotateY(0deg);
         box-shadow: -1vh 1vh 1vh black;
     }
@@ -172,19 +214,25 @@ html {
 @keyframes backwardsFlipRight {
     0% {
         display: none;
-        transform: translateX(-100%) rotateY(-180deg);
+        transform: translateX(-100%) rotateY(180deg);
     }
     50% {
-        display: block;
-        z-index: 3;
-        transform: translateX(-50%) rotateY(-90deg);
+        z-index: 1;
+        transform: translateX(-50%) rotateY(90deg);
         box-shadow: 0vh 0vh 0vh black;
     }
+    51% {
+        z-index: 100;
+    }
     100% {
+        z-index: 1;
+        display: block;
         transform: translateX(0%) rotateY(0deg);
         box-shadow: 1vh 1vh 1vh black;
     }
 }
+
+
 /*Button Stuff*/
 
 .arrow {
@@ -209,6 +257,8 @@ html {
 .arrowRight {
     right: 2vw;
 }
+
+
 /* Navigation bar */
 
 .navigation {
