@@ -1,12 +1,11 @@
-var PAGE;
+var CURRENT_PAGE;
 var PREVIOUS_DIRECTION;
 var PAGE_ASPECT_RATIO = 0.7;
 var ZOOMED = false;
-var PAGES_TO_HIDE = [];
-var PAGES_TO_MAKE_LEFT = [];
+var PAGES = [0];
 
 window.onload = function() {
-    PAGE = 1;
+    window.CURRENT_PAGE = 1;
 
     var pdf = PDFJS.getDocument('http://files.ramcomputers.uri.edu/bookstore/catalog/files/a.pdf').then(function(pdf) {
         delayedLoad(pdf, 1)
@@ -14,7 +13,7 @@ window.onload = function() {
 }
 
 window.onresize = function() {
-    fixAspectRatio(window.PAGE);
+    fixAspectRatio();
 }
 
 window.addEventListener("keydown", function(e) {
@@ -33,7 +32,7 @@ window.addEventListener("keydown", function(e) {
 }, false);
 
 // fixes aspect ratio of displayed pages
-function fixAspectRatio(currentPage) {
+function fixAspectRatio() {
     var aspectRatio = window.PAGE_ASPECT_RATIO;
     var book = document.getElementById("book");
     var bookBoundingClientRect = book.getBoundingClientRect();
@@ -49,7 +48,7 @@ function fixAspectRatio(currentPage) {
         newTop = (bookBoundingClientRect.height - newHeight) / 2;
     }
 
-    pageStyle.innerHTML = ".page { width: " + newWidth + "px !important; height: " + newHeight + "px !important; top: " + newTop + "px !important;}";
+    pageStyle.innerHTML = ".page { width: " + newWidth + "px; height: " + newHeight + "px !important; top: " + newTop + "px !important;}";
 }
 
 // adds navigation icons to the navigation bar at the bottom
@@ -83,13 +82,6 @@ function delayedLoad(pdf, currentPage) {
             var scale = 2.5;
             var viewport = page.getViewport(scale);
             var canvas = document.createElement("canvas");
-
-            if (currentPage == 1) {
-                canvas.className = "page"
-            } else {
-                canvas.className = "hidden";
-            }
-
             var context = canvas.getContext('2d');
 
             // sharpens displayed PDF
@@ -102,12 +94,15 @@ function delayedLoad(pdf, currentPage) {
             };
 
             page.render(renderContext);
-            document.getElementById("book").appendChild(canvas);
+            canvas.style.navIndex = currentPage;
+            canvas.className = "page";
+            window.PAGES.push(canvas);
             console.log("page " + currentPage + " rendered");
 
             // set initial aspect ratio, add buttons to navigation bar
             if (currentPage == 1) {
-                fixAspectRatio(currentPage);
+                book.appendChild(window.PAGES[currentPage]);
+                fixAspectRatio();
                 addNavigationIcon(currentPage);
             } else if (currentPage % 2 == 1) {
                 addNavigationIcon(currentPage);
@@ -124,23 +119,19 @@ function delayedLoad(pdf, currentPage) {
 
 // displays a specific two pages when the user selects
 function loadPage(desiredPage) {
-    var pages = document.getElementById('book').childNodes;
-    var currentPage = window.PAGE;
+    var book = document.getElementById('book');
+    book.innerHTML = "";
+
+    var currentPage = window.CURRENT_PAGE;
 
     if (desiredPage > currentPage) {
-
+        window.PAGES_TO_HIDE.push(currentPage);
         pages[currentPage].className = "page animated animatedRightPage";
-        pages[desiredPage - 1].className = "page animated animatedBackwardsRightPage";
 
         pages[desiredPage].className = "page zIndex1";
 
-        window.setTimeout(function() {
-            pages[currentPage - 1].className = "hidden";
-        }, 450);
-
         window.PREVIOUS_DIRECTION = "next";
-        window.PAGE = desiredPage;
-
+        window.CURRENT_PAGE = desiredPage;
     } else if (desiredPage < currentPage) {
 
         pages[currentPage - 1].className = "page animated animatedLeftPage";
@@ -157,84 +148,92 @@ function loadPage(desiredPage) {
         }, 450)
 
         window.PREVIOUS_DIRECTION = "back"
-        window.PAGE = desiredPage;
+        window.CURRENT_PAGE = desiredPage;
     }
 }
-
 
 // function to display previous 2 pages
 function previousPage() {
     var pages = document.getElementById('book').childNodes;
-    var currentPage = window.PAGE;
+    var currentPage = window.CURRENT_PAGE;
     var previousDirection = window.PREVIOUS_DIRECTION;
 
     if (currentPage > 2) {
-      /*
-        if (currentPage < pages.length) {
-            if (previousDirection == "back") {
-                pages[currentPage].addEventListener("animationend", function() {
-                    pages[currentPage].className = "hidden";
-                });
-            } else {
-                pages[currentPage].className = "page zIndex1";
-
-                pages[currentPage].addEventListener("animationend", function() {
-                    pages[currentPage].className = "hidden";
-                });
-            }
-        } */
-
         // begin animations
-        window.PAGES_TO_HIDE.push(currentPage - 2);
-        pages[currentPage - 2].addEventListener("animationend", hidePage);
+        window.PAGES_TO_HIDE.push(currentPage - 1);
+        pages[currentPage - 1].addEventListener("animationend", hidePage);
         pages[currentPage - 1].className = "page animated animatedLeftPage";
-        pages[currentPage - 2].className = "page animated animatedBackwardsLeftPage";
 
         if (currentPage > 3) {
-            pages[currentPage - 3].className = "page left zIndex1";
+            pages[currentPage - 3].className = "page left";
         }
-        PREVIOUS_DIRECTION = "back";
-        PAGE -= 2;
+        window.PREVIOUS_DIRECTION = "back";
+        window.CURRENT_PAGE -= 2;
     }
+}
+
+// essentially indexOf for NodeList type objects
+function findFirstMatchingNode(nodeList, searchString) {
+    var node;
+    var found = false;
+
+    for (var i = 0; i < nodeList.length && found == false; i++) {
+        if (nodeList[i].className == searchString) {
+            node = nodeList[i];
+            found = true;
+        }
+    }
+
+    return node;
 }
 
 // function to display next two pages
 function nextPage() {
-    var pages = document.getElementById('book').childNodes;
-    var currentPage = window.PAGE;
-    var previousDirection = window.PREVIOUS_DIRECTION;
-    if (currentPage < pages.length - 2) {
+    var currentPage = window.CURRENT_PAGE;
+
+    if (currentPage < window.PAGES.length - 2) {
+        var book = document.getElementById('book');
+        var pages = book.childNodes;
+        var currentRightPage = findFirstMatchingNode(pages, "page");
+
         // begin animations
-        window.PAGES_TO_HIDE.push(currentPage + 1);
-        pages[currentPage + 1].addEventListener("animationend", hidePage);
-        pages[currentPage].className = "page animated animatedRightPage";
-        pages[currentPage + 1].className = "page animated animatedBackwardsRightPage";
+        currentRightPage.addEventListener("animationend", hidePage);
+        currentRightPage.className = "page animated animatedRightPage";
 
-        pages[currentPage + 2].className = "page";
+        book.appendChild(window.PAGES[currentPage + 2]);
 
-        PREVIOUS_DIRECTION = "next";
-        PAGE += 2;
+        window.PREVIOUS_DIRECTION = "next";
+        window.CURRENT_PAGE += 2;
     }
 }
 
 // used to hide pages after their animation is complete
 function hidePage() {
-    var pages = document.getElementById("book").childNodes;
-    var page = window.PAGES_TO_HIDE.shift();
+    var book = document.getElementById("book");
+    var pages = book.childNodes;
 
-    if (pages[page].className == "page animated animatedBackwardsRightPage") {
-        pages[page].className = "page left";
+    var flippedRightPage = findFirstMatchingNode(pages, "page animated animatedRightPage");
+    var pageIndex = parseInt(flippedRightPage.style.navIndex);
+    flippedRightPage.removeEventListener("animationend", hidePage);
+    book.removeChild(flippedRightPage);
 
-        if (page > 2) {
-            pages[page - 2].className = "hidden";
-        }
+    book.appendChild(window.PAGES[pageIndex + 1]);
+    book.lastChild.addEventListener("animationend", showPage);
+    book.lastChild.className = "page left animated animatedBackwardsRightPage";
+}
 
-        pages[page - 1].className = "hidden";
-    } else {
-        pages[page].className = "page";
+// used to show the next page
+function showPage() {
+    var book = document.getElementById("book");
+    var pages = book.childNodes;
 
-        pages[page + 2].className = "hidden"
+    var flippedBackwardsRightPage = findFirstMatchingNode(pages, "page left animated animatedBackwardsRightPage");
+    var pageIndex = parseInt(flippedBackwardsRightPage.style.navIndex);
+    flippedBackwardsRightPage.removeEventListener("animationend", showPage);
+    flippedBackwardsRightPage.className = "page left"
+
+    if (pageIndex > 2) {
+        var previousPageLeft = findFirstMatchingNode(pages, "page left");
+        book.removeChild(previousPageLeft);
     }
-
-    pages[page].removeEventListener("animationend", hidePage);
 }
