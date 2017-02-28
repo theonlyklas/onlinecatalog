@@ -7,11 +7,14 @@
         /* used for page aspect ratio, changed via JS */
     </style>
     <script type="text/javascript" src="js/pdf.js"></script>
-    <script type="text/javascript" src="alex.js"></script>
+    <script type="text/javascript" src="js/ourScripts.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
+    <div class="title">
+        <p>Campus Bookstore Catalog Demo</p>
+    </div>
     <div class="arrow arrowLeft" onclick="previousPage()">
         <p>
             <</p>
@@ -19,6 +22,9 @@
     <div id="book"> </div>
     <div class="arrow arrowRight" onclick="nextPage()">
         <p>></p>
+    </div>
+    <div class="zoom" onlick="zoomIn()">
+        <p>&#8981;</p>
     </div>
     <div id="navigationHidden" class="navigation">
         <div id="navigationShown" class="navigation">
