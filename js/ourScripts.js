@@ -1,18 +1,19 @@
 window.CURRENT_PAGE;
-window.PREVIOUS_DIRECTION;
 window.PAGE_ASPECT_RATIO = 0.7;
 window.ZOOMED = false;
 window.PAGES = ["<canvas> </canvas>"];
 window.MAX_PAGES;
 window.PDF_SCALE = 2;
+window.MOUSE_STATE;
 
 window.onload = function() {
     window.CURRENT_PAGE = 1;
+    removeZoom();
 
     PDFJS.getDocument('http://files.ramcomputers.uri.edu/bookstore/catalog/files/a.pdf').then(function(pdf) {
         window.MAX_PAGES = pdf.numPages;
         // if device is on iOS, change the scale of the rendered page to 1.5.  Otherwise, it crashes.
-        // detectIPhone(1.5);
+        detectIPhone(1.5);
 
         delayedLoad(pdf, 1);
     });
@@ -23,13 +24,13 @@ window.onresize = function() {
 }
 
 window.onunload = function() {
-  delete window.CURRENT_PAGE;
-  delete window.PREVIOUS_DIRECTION;
-  delete window.PAGE_ASPECT_RATIO;
-  delete window.ZOOMED;
-  delete window.PAGES;
-  delete window.MAX_PAGES;
-  delete window.PDF_SCALE;
+    delete window.CURRENT_PAGE;
+    delete window.PAGE_ASPECT_RATIO;
+    delete window.ZOOMED;
+    delete window.PAGES;
+    delete window.MAX_PAGES;
+    delete window.PDF_SCALE;
+    delete window.MOUSE_STATE;
 }
 
 window.addEventListener("keydown", function(e) {
@@ -46,32 +47,69 @@ window.addEventListener("keydown", function(e) {
     }
 }, false);
 
-// do things if an iphone is detected (may require changing of max pages depending on number of pages in catalog)
+// do things if an iPhone is detected (may require changing of max pages depending on number of pages in catalog)
 function detectIPhone(newScale) {
-  var iPhone = /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  if (iPhone == true) {
-    window.PDF_SCALE = newScale;
-  }
+    var iPhone = /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (iPhone == true) {
+        window.PDF_SCALE = newScale;
+    }
+}
+
+// remove the zoom button if the user is on a mobile device
+function removeZoom() {
+    var mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && !window.MSStream;
+    if (mobile) {
+        var zoomButton = document.getElementById("zoom");
+        zoomButton.parentNode.removeChild(zoomButton);
+    }
 }
 
 // fixes aspect ratio of displayed pages
 function fixAspectRatio() {
     var aspectRatio = window.PAGE_ASPECT_RATIO;
-    var book = document.getElementById("book");
-    var bookBoundingClientRect = book.getBoundingClientRect();
+    var book = document.getElementById("bookWrapper");
     var pageStyle = document.getElementsByTagName("head")[0].childNodes[1];
 
-    if (bookBoundingClientRect.width > window.innerHeight) {
-        newHeight = bookBoundingClientRect.height;
-        newWidth = newHeight * aspectRatio;
-        newTop = 0;
+    if (window.ZOOMED == false) {
+        var sizeMultiplier = 1;
+        var newPaddingBottom = "0px";
+        var newPaddingRight = "0px";
+        var overflowBehavior = "visible";
+        var newBookWidth = "100%";
     } else {
-        newWidth = bookBoundingClientRect.width / 2;
-        newHeight = newWidth / aspectRatio;
-        newTop = (bookBoundingClientRect.height - newHeight) / 2;
+        var sizeMultiplier = 2;
+        var newPaddingBottom = "calc(10vh + 15px)";
+        var newPaddingRight = "17px";
+        var overflowBehavior = "scroll !important";
     }
 
-    pageStyle.innerHTML = ".page { width: " + newWidth + "px; height: " + newHeight + "px !important; top: " + newTop + "px !important;}";
+    pageStyle.innerHTML = "#bookWrapper { padding-bottom: " + newPaddingBottom + "; padding-right: " + newPaddingRight + "; overflow: " + overflowBehavior + ";}";
+    var bookBoundingClientRect = book.getBoundingClientRect();
+
+    if (bookBoundingClientRect.width * 0.9 > window.innerHeight) {
+        var newHeight = sizeMultiplier * bookBoundingClientRect.height + "px";
+        var newWidth = newHeight * aspectRatio + "px";
+        var newTop = "0px";
+        var newBookWidth = newWidth * 2 + "px";
+    } else {
+        var newWidth = sizeMultiplier * bookBoundingClientRect.width / 2 + "px";
+        var newHeight = newWidth / aspectRatio + "px";
+        var newTop = (bookBoundingClientRect.height - newHeight) / 2 + "px";
+        var newBookWidth = newWidth * 2 + "px";
+    }
+
+    pageStyle.innerHTML += " #book {width: " + newBookWidth +" !important; }.page { width: " + newWidth + "; height: " + newHeight + " !important; top: " + newTop + " !important;}";
+}
+
+// increases the size of the book when the user clicks the zoom button
+function zoomIn() {
+    if (window.ZOOMED == false) {
+        window.ZOOMED = true;
+        fixAspectRatio();
+    } else {
+        window.ZOOMED = false;
+        fixAspectRatio();
+    }
 }
 
 // adds navigation icons to the navigation bar at the bottom
@@ -102,7 +140,7 @@ function delayedLoad(pdf, currentPage) {
     setTimeout(function() {
         pdf.getPage(currentPage).then(function(page) {
             // you can now use *page* here
-            var scale = 2;
+            var scale = window.PDF_SCALE;
             var viewport = page.getViewport(scale);
             var canvas = document.createElement("canvas");
             var context = canvas.getContext('2d');
@@ -124,7 +162,7 @@ function delayedLoad(pdf, currentPage) {
             // set initial aspect ratio, add buttons to navigation bar
             if (currentPage == 1) {
                 book.appendChild(window.PAGES[currentPage]);
-                fixAspectRatio();
+                fixAspectRatio(1);
                 addNavigationIcon(currentPage);
             } else if (currentPage % 2 == 1) {
                 addNavigationIcon(currentPage);
@@ -156,9 +194,9 @@ function findFirstMatchingNode(nodeList, searchString) {
 
 // displays a specific two pages when the user selects
 function loadPage(desiredPage) {
-  var book = document.getElementById('book');
-  var pages = book.childNodes;
-  var currentPage = window.CURRENT_PAGE;
+    var book = document.getElementById('book');
+    var pages = book.childNodes;
+    var currentPage = window.CURRENT_PAGE;
 
     if (desiredPage > currentPage) {
         var currentRightPage = findFirstMatchingNode(pages, "page");
@@ -179,21 +217,20 @@ function previousPage() {
     var currentPage = window.CURRENT_PAGE;
 
     if (currentPage > 2) {
-      var book = document.getElementById('book');
-      var pages = book.childNodes;
-      var currentLeftPage = findFirstMatchingNode(pages, "page left");
+        var book = document.getElementById('book');
+        var pages = book.childNodes;
+        var currentLeftPage = findFirstMatchingNode(pages, "page left");
 
-      // begin animations
-      currentLeftPage.addEventListener("animationend", hidePage);
-      currentLeftPage.className = "page left animated animatedLeftPage";
+        // begin animations
+        currentLeftPage.addEventListener("animationend", hidePage);
+        currentLeftPage.className = "page left animated animatedLeftPage";
 
-      if (currentPage > 4) {
-        book.appendChild(window.PAGES[currentPage - 3]);
-        book.lastChild.className = "page left";
-      }
+        if (currentPage > 4) {
+            book.appendChild(window.PAGES[currentPage - 3]);
+            book.lastChild.className = "page left";
+        }
 
-      window.PREVIOUS_DIRECTION = "next";
-      window.CURRENT_PAGE -= 2;
+        window.CURRENT_PAGE -= 2;
     }
 }
 
@@ -212,7 +249,6 @@ function nextPage() {
 
         book.appendChild(window.PAGES[currentPage + 2]);
 
-        window.PREVIOUS_DIRECTION = "next";
         window.CURRENT_PAGE += 2;
     }
 }
@@ -224,13 +260,13 @@ function hidePage(e) {
     var finishedAnimation = e.animationName;
 
     if (finishedAnimation == "flipLeft") {
-      var flippedPageClassName = "page animated animatedRightPage";
-      var nextPageClassName = "page left animated animatedBackwardsRightPage";
-      var indexModifier = 1;
+        var flippedPageClassName = "page animated animatedRightPage";
+        var nextPageClassName = "page left animated animatedBackwardsRightPage";
+        var indexModifier = 1;
     } else {
-      var flippedPageClassName = "page left animated animatedLeftPage";
-      var nextPageClassName = "page animated animatedBackwardsLeftPage";
-      var indexModifier = -1;
+        var flippedPageClassName = "page left animated animatedLeftPage";
+        var nextPageClassName = "page animated animatedBackwardsLeftPage";
+        var indexModifier = -1;
     }
 
     var flippedPage = findFirstMatchingNode(pages, flippedPageClassName);
@@ -250,12 +286,11 @@ function showPage(e) {
     var finishedAnimation = e.animationName;
 
     if (finishedAnimation == "backwardsFlipLeft") {
-      var flippedPageClassName = "page left animated animatedBackwardsRightPage";
-      var newClassName = "page left"
-    }
-    else {
-      var flippedPageClassName = "page animated animatedBackwardsLeftPage";
-      var newClassName = "page";
+        var flippedPageClassName = "page left animated animatedBackwardsRightPage";
+        var newClassName = "page left"
+    } else {
+        var flippedPageClassName = "page animated animatedBackwardsLeftPage";
+        var newClassName = "page";
     }
 
     var flippedBackwardsPage = findFirstMatchingNode(pages, flippedPageClassName);
@@ -263,7 +298,7 @@ function showPage(e) {
     flippedBackwardsPage.removeEventListener("animationend", showPage);
     flippedBackwardsPage.className = newClassName;
 
-    if (pageIndex > 2) {
+    if (pageIndex > 2 || finishedAnimation == "backwardsFlipRight") {
         var previousPage = findFirstMatchingNode(pages, newClassName);
         book.removeChild(previousPage);
     }

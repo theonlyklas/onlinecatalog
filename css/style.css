@@ -76,11 +76,20 @@ html {
 
 #book {
     position: absolute;
+    height: 100%;
+    width: 100%;
+    transform-style: preserve-3d;
+    overflow: visible;
+}
+
+#bookWrapper {
+    position: absolute;
     top: 10%;
-    left: 5%;
-    width: 90%;
+    left: 0%;
+    width: 100%;
     height: 80%;
     transform-style: preserve-3d;
+    overflow: visible;
 }
 
 .page {
@@ -89,7 +98,6 @@ html {
     box-shadow: 1vh 1vh 1vh black;
     backface-visibility: hidden;
     transform-style: preserve-3d;
-    translateZ(-1000px);
 }
 
 .left {
@@ -104,7 +112,7 @@ html {
 }
 
 .animated {
-    animation-duration: 10s;
+    animation-duration: 0.25s;
     animation-fill-mode: forwards;
     animation-timing-function: ease-in;
 }
@@ -161,11 +169,11 @@ html {
 @keyframes backwardsFlipRight {
     0% {
         z-index: 10;
-        transform: translateX(-50%) translateZ(1000px) rotateY(90deg);
+        transform: translateX(-50%) translateZ(2000px) rotateY(90deg);
     }
     100% {
         z-index: 1;
-        transform: translateX(0%) translateZ(2000px) rotateY(0deg);
+        transform: translateX(0%) translateZ(1000px) rotateY(0deg);
     }
 }
 
@@ -251,9 +259,9 @@ html {
 }
 
 
-/* Navigation icon */
+/* Zoom icon */
 
-.zoom {
+#zoom {
     position: absolute;
     bottom: 10%;
     left: calc(50% - var(--zoomRadius) / 2);
