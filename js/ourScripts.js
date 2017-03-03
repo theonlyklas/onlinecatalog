@@ -219,8 +219,8 @@ function loadPage(desiredPage) {
         currentLeftPage.className = "page left animated animatedLeftPage";
 
         if (desiredPage > 2) {
-          book.appendChild(window.PAGES[desiredPage]);
-          book.lastChild.className = "page left";
+            book.appendChild(window.PAGES[desiredPage]);
+            book.lastChild.className = "page left";
         }
 
         window.CURRENT_PAGE = desiredPage;
@@ -294,7 +294,7 @@ function hidePage(e) {
     var pageIndex = window.PAGES.indexOf(appendedPage);
 
     if (pageIndex == -1) {
-      pageIndex = 0;
+        pageIndex = 0;
     }
 
     book.appendChild(window.PAGES[pageIndex + indexModifier]);
@@ -321,11 +321,9 @@ function showPage(e) {
     flippedBackwardsPage.removeEventListener("animationend", showPage);
     flippedBackwardsPage.className = newClassName;
 
-    if (pages.length > 3 || finishedAnimation == "backwardsFlipRight") {
-      if (pageIndex > 2 || finishedAnimation == "backwardsFlipRight") {
-          var previousPage = findFirstMatchingNode(pages, newClassName);
-          book.removeChild(previousPage);
-      }
+    if (pageIndex > 2 || (flippedPageClassName == "page animated animatedBackwardsLeftPage" && pageIndex == 1)) {
+      var previousPage = findFirstMatchingNode(pages, newClassName);
+      var previousPageIndex = window.PAGES.indexOf(previousPage);
+      book.removeChild(previousPage);
     }
-
 }
