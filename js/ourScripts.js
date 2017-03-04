@@ -6,6 +6,7 @@ window.MAX_PAGES;
 window.PDF_SCALE = 2;
 window.DESIRED_PAGE = 0;
 window.FLIPPING_PAGES = 0;
+window.FLIPPING_DIRECTION = "";
 
 window.onload = function() {
     window.CURRENT_PAGE = 1;
@@ -38,6 +39,7 @@ window.onunload = function() {
     delete window.PDF_SCALE;
     delete window.DESIRED_PAGE;
     delete window.FLIPPING_PAGES;
+    delete window.FLIPPING_DIRECTION;
 }
 
 window.addEventListener("keydown", function(e) {
@@ -47,9 +49,9 @@ window.addEventListener("keydown", function(e) {
     }
 
     // reassign left and right arrow keys to previousPage() and nextPage()
-    if (e.keyCode == 37) {
+    if (e.keyCode == 37 && window.FLIPPING_DIRECTION != "right") {
         previousPage();
-    } else if (e.keyCode == 39) {
+    } else if (e.keyCode == 39 && window.FLIPPING_DIRECTION != "left") {
         nextPage();
     }
 }, false);
@@ -229,6 +231,7 @@ function loadPage(desiredPage) {
         book.lastChild.className = "page";
         window.CURRENT_PAGE = desiredPage;
         window.DESIRED_PAGE = desiredPage - 1;
+        window.FLIPPING_DIRECTION = "right";
     } else if (desiredPage < currentPage) {
         var currentLeftPage = findFirstMatchingNode(pages, "page left");
         var disabledArrow = document.getElementById("right");
@@ -240,6 +243,7 @@ function loadPage(desiredPage) {
         book.lastChild.className = "page left";
         window.CURRENT_PAGE = desiredPage;
         window.DESIRED_PAGE = desiredPage;
+        window.FLIPPING_DIRECTION = "left";
     } else {
         return;
     }
@@ -274,6 +278,7 @@ function previousPage() {
 
         window.CURRENT_PAGE -= 2;
         window.FLIPPING_PAGES += 1;
+        window.FLIPPING_DIRECTION = "left";
     }
 }
 
@@ -301,6 +306,7 @@ function nextPage() {
 
         window.CURRENT_PAGE += 2;
         window.FLIPPING_PAGES += 1;
+        window.FLIPPING_DIRECTION = "right";
     }
 }
 
@@ -373,5 +379,6 @@ function showPage(e) {
     if (window.FLIPPING_PAGES == 0) {
         disabledArrow.setAttribute("onclick", disabledArrowOnClick);
         navBar.style = "";
+        window.FLIPPING_DIRECTION = "";
     }
 }
