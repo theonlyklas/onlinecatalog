@@ -92,6 +92,10 @@ html {
     overflow: visible;
 }
 
+#firstPage {
+  box-shadow: none !important;
+}
+
 .page {
     position: absolute;
     left: 50%;
