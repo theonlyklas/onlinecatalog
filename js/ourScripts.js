@@ -173,7 +173,6 @@ function delayedLoad(pdf, currentPage) {
             };
             page.render(renderContext);
 
-            canvas.setAttribute("id", "page-" + currentPage);
             canvas.className = "page";
             window.PAGES.push(canvas);
 
@@ -229,6 +228,7 @@ function loadPage(desiredPage) {
 
         book.appendChild(window.PAGES[desiredPage]);
         book.lastChild.className = "page";
+
         window.CURRENT_PAGE = desiredPage;
         window.DESIRED_PAGE = desiredPage - 1;
         window.FLIPPING_DIRECTION = "right";
@@ -241,6 +241,7 @@ function loadPage(desiredPage) {
 
         book.appendChild(window.PAGES[desiredPage - 1]);
         book.lastChild.className = "page left";
+
         window.CURRENT_PAGE = desiredPage;
         window.DESIRED_PAGE = desiredPage;
         window.FLIPPING_DIRECTION = "left";
@@ -365,13 +366,11 @@ function showPage(e) {
     }
 
     var flippedBackwardsPage = findFirstMatchingNode(pages, flippedPageClassName);
-    var pageIndex = window.PAGES.indexOf(flippedBackwardsPage);
     flippedBackwardsPage.className = newClassName;
     flippedBackwardsPage.removeEventListener("animationend", showPage);
 
 
     var previousPage = findFirstMatchingNode(pages, newClassName);
-    var previousPageIndex = window.PAGES.indexOf(previousPage);
     book.removeChild(previousPage);
 
     window.FLIPPING_PAGES -= 1;
