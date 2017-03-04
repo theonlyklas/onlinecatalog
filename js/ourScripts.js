@@ -5,6 +5,7 @@ window.PAGES = [];
 window.MAX_PAGES;
 window.PDF_SCALE = 2;
 window.DESIRED_PAGE = 0;
+window.FLIPPING_PAGES = 0;
 
 window.onload = function() {
     window.CURRENT_PAGE = 1;
@@ -36,6 +37,7 @@ window.onunload = function() {
     delete window.MAX_PAGES;
     delete window.PDF_SCALE;
     delete window.DESIRED_PAGE;
+    delete window.FLIPPING_PAGES;
 }
 
 window.addEventListener("keydown", function(e) {
@@ -214,25 +216,23 @@ function loadPage(desiredPage) {
     var book = document.getElementById('book');
     var pages = book.childNodes;
     var currentPage = window.CURRENT_PAGE;
-    var leftArrow = document.getElementById("left");
-    var rightArrow = document.getElementById("right");
     var navBar = document.getElementById("navigationHidden");
-
-    // Disable any other user navigation
-    navBar.style = "pointer-events: none;";
-    leftArrow.setAttribute("onclick", "");
-    rightArrow.setAttribute("onclick", "");
 
     if (desiredPage > currentPage) {
         var currentRightPage = findFirstMatchingNode(pages, "page");
+        var disabledArrow = document.getElementById("left");
+
         currentRightPage.addEventListener("animationend", hidePage);
         currentRightPage.className = "page animated animatedRightPage";
 
         book.appendChild(window.PAGES[desiredPage]);
+        book.lastChild.className = "page";
         window.CURRENT_PAGE = desiredPage;
         window.DESIRED_PAGE = desiredPage - 1;
     } else if (desiredPage < currentPage) {
         var currentLeftPage = findFirstMatchingNode(pages, "page left");
+        var disabledArrow = document.getElementById("right");
+
         currentLeftPage.addEventListener("animationend", hidePage);
         currentLeftPage.className = "page left animated animatedLeftPage";
 
@@ -240,13 +240,15 @@ function loadPage(desiredPage) {
         book.lastChild.className = "page left";
         window.CURRENT_PAGE = desiredPage;
         window.DESIRED_PAGE = desiredPage;
+    } else {
+        return;
     }
 
-    window.setTimeout(function() {
-        leftArrow.setAttribute("onclick", "previousPage()");
-        rightArrow.setAttribute("onclick", "nextPage()");
-        navBar.style = "";
-    }, 500);
+    // Disable any other user navigation
+    navBar.style = "pointer-events: none;";
+    disabledArrow.setAttribute("onclick", "");
+
+    window.FLIPPING_PAGES += 1;
 }
 
 // function to display previous 2 pages
@@ -271,6 +273,7 @@ function previousPage() {
         book.lastChild.className = "page left";
 
         window.CURRENT_PAGE -= 2;
+        window.FLIPPING_PAGES += 1;
     }
 }
 
@@ -294,8 +297,10 @@ function nextPage() {
         currentRightPage.className = "page animated animatedRightPage";
 
         book.appendChild(window.PAGES[currentPage + 2]);
+        book.lastChild.className = "page";
 
         window.CURRENT_PAGE += 2;
+        window.FLIPPING_PAGES += 1;
     }
 }
 
@@ -355,15 +360,18 @@ function showPage(e) {
 
     var flippedBackwardsPage = findFirstMatchingNode(pages, flippedPageClassName);
     var pageIndex = window.PAGES.indexOf(flippedBackwardsPage);
-    flippedBackwardsPage.removeEventListener("animationend", showPage);
     flippedBackwardsPage.className = newClassName;
+    flippedBackwardsPage.removeEventListener("animationend", showPage);
+
 
     var previousPage = findFirstMatchingNode(pages, newClassName);
     var previousPageIndex = window.PAGES.indexOf(previousPage);
     book.removeChild(previousPage);
 
-    window.setTimeout(function() {
+    window.FLIPPING_PAGES -= 1;
+
+    if (window.FLIPPING_PAGES == 0) {
         disabledArrow.setAttribute("onclick", disabledArrowOnClick);
         navBar.style = "";
-    }, 500);
+    }
 }
