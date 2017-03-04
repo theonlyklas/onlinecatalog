@@ -1,9 +1,10 @@
 window.CURRENT_PAGE;
 window.PAGE_ASPECT_RATIO = 0.7;
 window.ZOOMED = false;
-window.PAGES = [0];
+window.PAGES = [];
 window.MAX_PAGES;
 window.PDF_SCALE = 2;
+window.DESIRED_PAGE = 0;
 
 window.onload = function() {
     window.CURRENT_PAGE = 1;
@@ -13,6 +14,11 @@ window.onload = function() {
         window.MAX_PAGES = pdf.numPages;
         // if device is on iOS, change the scale of the rendered page to 1.5.  Otherwise, it crashes due to using too much memory.
         detectIPhone(1.5);
+
+        var canvas = document.createElement("canvas");
+        canvas.className = "page";
+        canvas.setAttribute("id", "firstPage");
+        window.PAGES.push(canvas);
 
         delayedLoad(pdf, 1);
     });
@@ -29,6 +35,7 @@ window.onunload = function() {
     delete window.PAGES;
     delete window.MAX_PAGES;
     delete window.PDF_SCALE;
+    delete window.DESIRED_PAGE;
 }
 
 window.addEventListener("keydown", function(e) {
@@ -95,7 +102,7 @@ function fixAspectRatio() {
             var newTop = (bookBoundingClientRect.height - newHeight) / 2;
         }
     } else {
-        var canvasWidth = document.getElementById("book").children[0].width;
+        var canvasWidth = document.getElementById("book").children[1].width;
         var newWidth = canvasWidth;
         var newHeight = canvasWidth / aspectRatio;
 
@@ -162,6 +169,7 @@ function delayedLoad(pdf, currentPage) {
             };
             page.render(renderContext);
 
+            canvas.setAttribute("id", "page-" + currentPage);
             canvas.className = "page";
             window.PAGES.push(canvas);
 
@@ -169,6 +177,8 @@ function delayedLoad(pdf, currentPage) {
 
             // set initial aspect ratio, add buttons to navigation bar
             if (currentPage == 1) {
+                book.appendChild(window.PAGES[0]);
+                book.lastChild.className = "page left";
                 book.appendChild(window.PAGES[currentPage]);
                 fixAspectRatio(1);
                 addNavigationIcon(currentPage);
@@ -196,7 +206,6 @@ function findFirstMatchingNode(nodeList, searchString) {
             found = true;
         }
     }
-
     return node;
 }
 
@@ -205,6 +214,14 @@ function loadPage(desiredPage) {
     var book = document.getElementById('book');
     var pages = book.childNodes;
     var currentPage = window.CURRENT_PAGE;
+    var leftArrow = document.getElementById("left");
+    var rightArrow = document.getElementById("right");
+    var navBar = document.getElementById("navigationHidden");
+
+    // Disable any other user navigation
+    navBar.style = "pointer-events: none;";
+    leftArrow.setAttribute("onclick", "");
+    rightArrow.setAttribute("onclick", "");
 
     if (desiredPage > currentPage) {
         var currentRightPage = findFirstMatchingNode(pages, "page");
@@ -213,18 +230,23 @@ function loadPage(desiredPage) {
 
         book.appendChild(window.PAGES[desiredPage]);
         window.CURRENT_PAGE = desiredPage;
+        window.DESIRED_PAGE = desiredPage - 1;
     } else if (desiredPage < currentPage) {
         var currentLeftPage = findFirstMatchingNode(pages, "page left");
         currentLeftPage.addEventListener("animationend", hidePage);
         currentLeftPage.className = "page left animated animatedLeftPage";
 
-        if (desiredPage > 2) {
-            book.appendChild(window.PAGES[desiredPage]);
-            book.lastChild.className = "page left";
-        }
-
+        book.appendChild(window.PAGES[desiredPage - 1]);
+        book.lastChild.className = "page left";
         window.CURRENT_PAGE = desiredPage;
+        window.DESIRED_PAGE = desiredPage;
     }
+
+    window.setTimeout(function() {
+        leftArrow.setAttribute("onclick", "previousPage()");
+        rightArrow.setAttribute("onclick", "nextPage()");
+        navBar.style = "";
+    }, 500);
 }
 
 // function to display previous 2 pages
@@ -235,15 +257,18 @@ function previousPage() {
         var book = document.getElementById('book');
         var pages = book.childNodes;
         var currentLeftPage = findFirstMatchingNode(pages, "page left");
+        var disabledArrow = document.getElementById("right");
+        var navBar = document.getElementById("navigationHidden");
+
+        // Disable opposite direction navigation
+        disabledArrow.setAttribute("onclick", "");
+        navBar.style = "pointer-events: none;";
 
         // begin animations
         currentLeftPage.addEventListener("animationend", hidePage);
         currentLeftPage.className = "page left animated animatedLeftPage";
-
-        if (currentPage > 4) {
-            book.appendChild(window.PAGES[currentPage - 3]);
-            book.lastChild.className = "page left";
-        }
+        book.appendChild(window.PAGES[currentPage - 3]);
+        book.lastChild.className = "page left";
 
         window.CURRENT_PAGE -= 2;
     }
@@ -257,6 +282,12 @@ function nextPage() {
         var book = document.getElementById('book');
         var pages = book.childNodes;
         var currentRightPage = findFirstMatchingNode(pages, "page");
+        var disabledArrow = document.getElementById("left");
+        var navBar = document.getElementById("navigationHidden");
+
+        // Disable opposite direction navigation
+        disabledArrow.setAttribute("onclick", "");
+        navBar.style = "pointer-events: none;";
 
         // begin animations
         currentRightPage.addEventListener("animationend", hidePage);
@@ -278,26 +309,27 @@ function hidePage(e) {
         var flippedPageClassName = "page animated animatedRightPage";
         var nextPageClassName = "page left animated animatedBackwardsRightPage";
         var appendedPageClassName = "page";
-        var indexModifier = -1;
+        var indexModifier = 1;
     } else {
         var flippedPageClassName = "page left animated animatedLeftPage";
         var nextPageClassName = "page animated animatedBackwardsLeftPage";
         var appendedPageClassName = "page left";
-        var indexModifier = 1;
+        var indexModifier = -1;
     }
 
     var flippedPage = findFirstMatchingNode(pages, flippedPageClassName);
+    var flippedPageIndex = window.PAGES.indexOf(flippedPage);
     flippedPage.removeEventListener("animationend", hidePage);
     book.removeChild(flippedPage);
 
-    var appendedPage = findFirstMatchingNode(pages, appendedPageClassName);
-    var pageIndex = window.PAGES.indexOf(appendedPage);
-
-    if (pageIndex == -1) {
-        pageIndex = 0;
+    if (window.DESIRED_PAGE == 0) {
+        var nextPageIndex = flippedPageIndex + indexModifier;
+    } else {
+        var nextPageIndex = window.DESIRED_PAGE;
+        window.DESIRED_PAGE = 0;
     }
 
-    book.appendChild(window.PAGES[pageIndex + indexModifier]);
+    book.appendChild(window.PAGES[nextPageIndex]);
     book.lastChild.addEventListener("animationend", showPage);
     book.lastChild.className = nextPageClassName;
 }
@@ -307,13 +339,18 @@ function showPage(e) {
     var book = document.getElementById("book");
     var pages = book.childNodes;
     var finishedAnimation = e.animationName;
+    var navBar = document.getElementById("navigationHidden");
 
     if (finishedAnimation == "backwardsFlipLeft") {
         var flippedPageClassName = "page left animated animatedBackwardsRightPage";
-        var newClassName = "page left"
+        var newClassName = "page left";
+        var disabledArrow = document.getElementById("left");
+        var disabledArrowOnClick = "previousPage()";
     } else {
         var flippedPageClassName = "page animated animatedBackwardsLeftPage";
         var newClassName = "page";
+        var disabledArrow = document.getElementById("right");
+        var disabledArrowOnClick = "nextPage()";
     }
 
     var flippedBackwardsPage = findFirstMatchingNode(pages, flippedPageClassName);
@@ -321,9 +358,12 @@ function showPage(e) {
     flippedBackwardsPage.removeEventListener("animationend", showPage);
     flippedBackwardsPage.className = newClassName;
 
-    if (pageIndex > 2 || (flippedPageClassName == "page animated animatedBackwardsLeftPage" && pageIndex == 1)) {
-      var previousPage = findFirstMatchingNode(pages, newClassName);
-      var previousPageIndex = window.PAGES.indexOf(previousPage);
-      book.removeChild(previousPage);
-    }
+    var previousPage = findFirstMatchingNode(pages, newClassName);
+    var previousPageIndex = window.PAGES.indexOf(previousPage);
+    book.removeChild(previousPage);
+
+    window.setTimeout(function() {
+        disabledArrow.setAttribute("onclick", disabledArrowOnClick);
+        navBar.style = "";
+    }, 500);
 }
